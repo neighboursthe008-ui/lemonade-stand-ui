@@ -6,7 +6,7 @@ import { PublicShell } from "@/components/layout/PublicShell";
 import { ErrorState, EmptyState, LoadingState } from "@/components/states/States";
 import { publicService } from "@/api/public/public.service";
 import { shouldRetryRead } from "@/api/client/http";
-import hero from "@/assets/hero-clinic.jpg";
+import { HeroCarousel } from "@/components/public/HeroCarousel";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -28,9 +28,10 @@ function Home() {
 
   return (
     <PublicShell>
-      <section className="aurora text-brand-foreground">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 md:grid-cols-2 lg:py-24">
-          <div>
+      <section className="relative overflow-hidden bg-brand text-brand-foreground">
+        <HeroCarousel />
+        <div className="relative mx-auto flex min-h-[560px] max-w-7xl items-center px-4 py-16 sm:px-6 lg:min-h-[640px]">
+          <div className="max-w-xl">
             <p className="mb-4 inline-block rounded-full bg-lemon px-3 py-1 text-xs font-semibold text-lemon-foreground">Lemonade Dental Clinic</p>
             <h1 className="text-4xl font-semibold leading-tight sm:text-5xl">Dental care that feels calm, clear and personal.</h1>
             <p className="mt-5 max-w-lg text-brand-foreground/80">Browse our services, meet the dentists and book a visit. No payment is needed to book — your consultation is handled at the clinic.</p>
@@ -39,7 +40,6 @@ function Home() {
               <Button asChild size="lg" variant="outline" className="border-brand-foreground/30 bg-transparent text-brand-foreground hover:bg-brand-foreground/10"><Link to="/auth/login">Staff sign in</Link></Button>
             </div>
           </div>
-          <img src={hero} alt="Bright, modern dental treatment room" width={1280} height={960} className="aspect-[4/3] w-full rounded-xl object-cover" />
         </div>
       </section>
 
