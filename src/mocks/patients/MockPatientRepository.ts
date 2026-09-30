@@ -26,7 +26,8 @@ function build(i: number): Patient {
   };
 }
 
-let store: Patient[] = Array.from({ length: 42 }, (_, i) => build(i));
+let store: Patient[] = Array.from({ length: 120 }, (_, i) => build(i));
+export const mockPatientList = () => store;
 let nextId = -2000;
 
 function fromInput(id: number, number: string, x: PatientInput, prev?: Patient): Patient {
