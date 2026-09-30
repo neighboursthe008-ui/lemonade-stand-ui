@@ -16,9 +16,9 @@ import { useAuth } from "@/stores/auth";
 
 export const Route = createFileRoute("/app/patients/$id/")({
   head: () => ({ meta: [
-    { title: "Patient record — Lemonade Staff" },
+    { title: "Patient record — Munab Staff" },
     { name: "description", content: "Patient details, medical notes and clinical history." },
-    { property: "og:title", content: "Patient record — Lemonade Staff" },
+    { property: "og:title", content: "Patient record — Munab Staff" },
     { property: "og:description", content: "Patient details and clinical history." },
     { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
   ] }),
@@ -143,7 +143,7 @@ function PatientProfile() {
         <DialogContent className="sm:max-w-xl">
           <DialogHeader><DialogTitle>{letter === "certificate" ? "Medical certificate" : "Referral letter"}</DialogTitle><DialogDescription>Generated in the browser for printing. Not stored in the clinic system.</DialogDescription></DialogHeader>
           <div className="space-y-2 rounded-md border bg-background p-4 text-sm">
-            <p className="font-display font-bold text-primary">Lemonade Dental Clinic · 0757 117 313</p>
+            <p className="font-display font-bold text-primary">Munab Nursing Home · 0757 117 313</p>
             <p>Date: {new Date().toLocaleDateString("en-KE")}</p>
             <p>Patient: <b>{p.full_name}</b> ({p.patient_number}){p.age != null ? `, ${p.age} years` : ""}</p>
             <p>{letter === "certificate" ? "This is to certify that the above-named patient was seen at our clinic and:" : "Kindly see the above-named patient for further management. Reason for referral:"}</p>

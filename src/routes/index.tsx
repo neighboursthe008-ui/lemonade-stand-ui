@@ -11,10 +11,10 @@ import { HeroCarousel } from "@/components/public/HeroCarousel";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Lemonade Dental Clinic — Gentle, modern dental care" },
-      { name: "description", content: "Explore Lemonade Dental Clinic services and dentists, and book an appointment online." },
-      { property: "og:title", content: "Lemonade Dental Clinic" },
-      { property: "og:description", content: "Explore our services and dentists, and book an appointment online." },
+      { title: "Munab Nursing Home — Comprehensive healthcare for your family" },
+      { name: "description", content: "Munab Nursing Home: outpatient, emergency, maternity, paediatrics, laboratory, radiology, pharmacy and dental care. Book online." },
+      { property: "og:title", content: "Munab Nursing Home" },
+      { property: "og:description", content: "Comprehensive healthcare for you and your family — book an appointment online." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -32,12 +32,12 @@ function Home() {
         <HeroCarousel />
         <div className="relative mx-auto flex min-h-[560px] max-w-7xl items-center px-4 py-16 sm:px-6 lg:min-h-[640px]">
           <div className="max-w-xl">
-            <p className="mb-4 inline-block rounded-full bg-lemon px-3 py-1 text-xs font-semibold text-lemon-foreground">Lemonade Dental Clinic</p>
-            <h1 className="text-4xl font-semibold leading-tight sm:text-5xl">Dental care that feels calm, clear and personal.</h1>
-            <p className="mt-5 max-w-lg text-brand-foreground/80">Browse our services, meet the dentists and book a visit. No payment is needed to book — your consultation is handled at the clinic.</p>
+            <p className="mb-4 inline-block rounded-full bg-lemon px-3 py-1 text-xs font-semibold text-lemon-foreground">Munab Nursing Home</p>
+            <h1 className="text-4xl font-semibold leading-tight sm:text-5xl">Comprehensive Healthcare for You and Your Family</h1>
+            <p className="mt-5 max-w-lg text-brand-foreground/80">Outpatient, emergency, maternity, paediatric, diagnostic, pharmacy and dental care under one roof. Book a visit online — no payment needed to book.</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg" className="bg-lemon text-lemon-foreground hover:bg-lemon/90"><Link to="/appointments"><CalendarCheck className="mr-2 h-4 w-4" />Book appointment</Link></Button>
-              <Button asChild size="lg" variant="outline" className="border-brand-foreground/30 bg-transparent text-brand-foreground hover:bg-brand-foreground/10"><Link to="/services">Explore services</Link></Button>
+              <Button asChild size="lg" variant="outline" className="border-brand-foreground/30 bg-transparent text-brand-foreground hover:bg-brand-foreground/10"><Link to="/departments">Our departments</Link></Button>
             </div>
           </div>
         </div>
@@ -56,12 +56,12 @@ function Home() {
 
       <section className="border-t bg-secondary/50">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
-          <h2 className="flex items-center gap-2 text-2xl font-semibold"><UserRound className="h-5 w-5 text-aqua" />Our dentists</h2>
+          <h2 className="flex items-center gap-2 text-2xl font-semibold"><UserRound className="h-5 w-5 text-aqua" />Our doctors</h2>
           <div className="mt-6">
-            {doctors.isLoading ? <LoadingState label="Loading dentists…" /> : doctors.isError ? <ErrorState error={doctors.error} onRetry={() => doctors.refetch()} />
-              : !doctors.data?.length ? <EmptyState title="No dentists listed yet" />
+            {doctors.isLoading ? <LoadingState label="Loading doctors…" /> : doctors.isError ? <ErrorState error={doctors.error} onRetry={() => doctors.refetch()} />
+              : !doctors.data?.length ? <EmptyState title="No doctors listed yet" />
               : <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{doctors.data.map((d) => (
-                  <li key={d.id} className="rounded-lg border bg-card p-5"><Link to="/doctors/$id" params={{ id: String(d.id) }} className="font-semibold hover:underline">{d.name}</Link><p className="text-sm text-muted-foreground">{d.specialty ?? "Dentist"}</p></li>
+                  <li key={d.id} className="rounded-lg border bg-card p-5"><Link to="/doctors/$id" params={{ id: String(d.id) }} className="font-semibold hover:underline">{d.name}</Link><p className="text-sm text-muted-foreground">{d.specialty ?? "Clinician"}</p></li>
                 ))}</ul>}
           </div>
         </div>

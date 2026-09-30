@@ -5,9 +5,9 @@ import h2 from "@/assets/hero2.png.asset.json";
 import h3 from "@/assets/hero3.png.asset.json";
 
 const slides = [
-  { src: h1.url, alt: "Lemonade Dental Clinic reception with Karibu welcome desk" },
-  { src: h2.url, alt: "Lemonade Dental Clinic waiting area with navy sofas" },
-  { src: h3.url, alt: "Lemonade Dental Clinic reception and corridor to treatment rooms" },
+  { src: h1.url, alt: "Munab Nursing Home reception with Karibu welcome desk" },
+  { src: h2.url, alt: "Munab Nursing Home waiting area with navy sofas" },
+  { src: h3.url, alt: "Munab Nursing Home reception and corridor to treatment rooms" },
 ];
 const INTERVAL_MS = 45_000;
 

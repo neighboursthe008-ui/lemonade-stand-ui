@@ -10,7 +10,7 @@ const links = [
   { to: "/about", label: "About" },
   { to: "/departments", label: "Departments" },
   { to: "/services", label: "Services" },
-  { to: "/doctors", label: "Dentists" },
+  { to: "/doctors", label: "Doctors" },
   { to: "/blog", label: "Blog" },
   { to: "/news", label: "News" },
   
@@ -58,7 +58,7 @@ export function PublicShell({ children }: { children: ReactNode }) {
             <p className="text-sm font-semibold">Visit</p>
             <ul className="mt-3 space-y-2 text-sm text-brand-foreground/75">
               <li><Link to="/services" className="hover:text-brand-foreground">Services</Link></li>
-              <li><Link to="/doctors" className="hover:text-brand-foreground">Dentists</Link></li>
+              <li><Link to="/doctors" className="hover:text-brand-foreground">Doctors</Link></li>
               <li><Link to="/appointments" className="hover:text-brand-foreground">Book a visit</Link></li>
             </ul>
           </div>

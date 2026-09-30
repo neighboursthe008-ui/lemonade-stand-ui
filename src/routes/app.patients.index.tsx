@@ -12,10 +12,10 @@ import { useAuth } from "@/stores/auth";
 
 export const Route = createFileRoute("/app/patients/")({
   head: () => ({ meta: [
-    { title: "Patients — Lemonade Staff" },
+    { title: "Patients — Munab Staff" },
     { name: "description", content: "Search, filter and open patient records." },
-    { property: "og:title", content: "Patients — Lemonade Staff" },
-    { property: "og:description", content: "Patient records for Lemonade Dental staff." },
+    { property: "og:title", content: "Patients — Munab Staff" },
+    { property: "og:description", content: "Patient records for Munab staff." },
     { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
   ] }),
   component: PatientsPage,

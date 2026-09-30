@@ -13,7 +13,7 @@ export const Route = createFileRoute("/app/$module")({
   }),
   head: ({ params }) => {
     const m = moduleByKey(params.module);
-    const title = `${m?.title ?? "Not found"} — Lemonade Staff`;
+    const title = `${m?.title ?? "Not found"} — Munab Staff`;
     return { meta: [
       { title }, { name: "description", content: m?.description ?? "Page not found" },
       { property: "og:title", content: title }, { property: "og:description", content: m?.description ?? "" },

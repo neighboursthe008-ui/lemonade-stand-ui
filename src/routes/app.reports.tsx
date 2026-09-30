@@ -16,8 +16,8 @@ import { formatValue, humanize } from "@/modules/format";
 
 export const Route = createFileRoute("/app/reports")({
   head: () => ({ meta: [
-    { title: "Reports — Lemonade Staff" }, { name: "description", content: "Revenue, appointments, financial and inventory reports." },
-    { property: "og:title", content: "Reports — Lemonade Staff" }, { property: "og:description", content: "Clinic reports." },
+    { title: "Reports — Munab Staff" }, { name: "description", content: "Revenue, appointments, financial and inventory reports." },
+    { property: "og:title", content: "Reports — Munab Staff" }, { property: "og:description", content: "Clinic reports." },
     { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
   ] }),
   component: Reports,

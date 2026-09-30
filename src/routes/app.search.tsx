@@ -7,8 +7,8 @@ import { useGlobalSearch } from "@/components/search/GlobalSearch";
 
 export const Route = createFileRoute("/app/search")({
   head: () => ({ meta: [
-    { title: "Global search — Lemonade Staff" }, { name: "description", content: "Search across patients, appointments, billing and stock." },
-    { property: "og:title", content: "Global search — Lemonade Staff" }, { property: "og:description", content: "Search the clinic system." },
+    { title: "Global search — Munab Staff" }, { name: "description", content: "Search across patients, appointments, billing and stock." },
+    { property: "og:title", content: "Global search — Munab Staff" }, { property: "og:description", content: "Search the clinic system." },
     { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
   ] }),
   component: SearchPage,

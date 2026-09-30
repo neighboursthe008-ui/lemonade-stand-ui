@@ -11,9 +11,9 @@ import { useAuth } from "@/stores/auth";
 
 export const Route = createFileRoute("/app/patients/new")({
   head: () => ({ meta: [
-    { title: "Register patient — Lemonade Staff" },
+    { title: "Register patient — Munab Staff" },
     { name: "description", content: "Register a new patient at the clinic." },
-    { property: "og:title", content: "Register patient — Lemonade Staff" },
+    { property: "og:title", content: "Register patient — Munab Staff" },
     { property: "og:description", content: "New patient registration." },
     { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
   ] }),

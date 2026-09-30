@@ -12,7 +12,7 @@ import { shouldRetryRead } from "@/api/client/http";
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/blog/")({
-  head: () => seo("Blog", "Dental health articles and clinic updates from Lemonade Dental Clinic."),
+  head: () => seo("Blog", "Dental health articles and clinic updates from Munab Nursing Home."),
   component: Blog,
 });
 
