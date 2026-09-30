@@ -4,9 +4,9 @@ import { API_BASE_URL } from "@/config/env";
 
 export const Route = createFileRoute("/dev/integration-status")({
   head: () => ({ meta: [
-    { title: "Integration status — Lemonade" },
+    { title: "Integration status — Munab Nursing Home" },
     { name: "description", content: "Which screens use the live Laravel API and which use development data." },
-    { property: "og:title", content: "Integration status — Lemonade" },
+    { property: "og:title", content: "Integration status — Munab Nursing Home" },
     { property: "og:description", content: "Live vs development data per screen." },
     { name: "robots", content: "noindex" },
   ] }),

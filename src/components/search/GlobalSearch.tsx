@@ -11,7 +11,7 @@ import { getValue } from "@/modules/format";
 import { mockPatientList } from "@/mocks/patients/MockPatientRepository";
 
 export interface SearchHit { group: string; label: string; sub?: string; to: string; search?: Record<string, unknown>; params?: Record<string, string> }
-const RECENT = "lemonade.recentSearches";
+const RECENT = "munab.recentSearches";
 
 /** Live: GET /api/v1/search?q= (server applies permissions). Dev profiles: search development data, filtered by the user's permissions. */
 export function useGlobalSearch(q: string) {

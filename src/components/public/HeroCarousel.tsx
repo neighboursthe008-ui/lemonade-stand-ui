@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import h1 from "@/assets/hero1.png.asset.json";
-import h2 from "@/assets/hero2.png.asset.json";
-import h3 from "@/assets/hero3.png.asset.json";
+import reception from "@/assets/munab-reception.jpg";
+import ward from "@/assets/munab-ward.jpg";
+import diagnostics from "@/assets/munab-diagnostics.jpg";
 
 const slides = [
-  { src: h1.url, alt: "Munab Nursing Home reception with Karibu welcome desk" },
-  { src: h2.url, alt: "Munab Nursing Home waiting area with navy sofas" },
-  { src: h3.url, alt: "Munab Nursing Home reception and corridor to treatment rooms" },
+  { src: reception, alt: "Patients and clinicians in a modern hospital reception" },
+  { src: ward, alt: "A nurse caring for a patient in a bright inpatient ward" },
+  { src: diagnostics, alt: "Hospital clinicians reviewing diagnostic imaging" },
 ];
 const INTERVAL_MS = 45_000;
 
@@ -20,11 +20,11 @@ export function HeroCarousel() {
   const go = (d: number) => setI((n) => (n + d + slides.length) % slides.length);
 
   return (
-    <div className="absolute inset-0" aria-roledescription="carousel" aria-label="Clinic photos">
+    <div className="absolute inset-0" aria-roledescription="carousel" aria-label="Munab hospital departments">
       {slides.map((s, idx) => (
         <img
           key={s.src} src={s.src} alt={s.alt} aria-hidden={idx !== i}
-          loading={idx === 0 ? "eager" : "lazy"} width={1672} height={941}
+          loading={idx === 0 ? "eager" : "lazy"} width={1600} height={1000}
           className={`absolute inset-0 h-full w-full object-cover transition-all duration-[1500ms] ease-out motion-reduce:transition-none ${idx === i ? "scale-100 opacity-100" : "scale-105 opacity-0"}`}
         />
       ))}
