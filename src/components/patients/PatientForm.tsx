@@ -66,7 +66,7 @@ const Section = ({ title, children }: { title: string; children: ReactNode }) =>
 
 export function PatientForm({ initial, branches, onSubmit, submitLabel, serverErrors, onCancel }: {
   initial: Values; branches: { id: number; name: string }[]; submitLabel: string;
-  serverErrors?: Record<string, string[]>; onSubmit: (v: PatientInput) => Promise<unknown>; onCancel: () => void;
+  serverErrors?: Record<string, string[]> | undefined; onSubmit: (v: PatientInput) => Promise<unknown>; onCancel: () => void;
 }) {
   const f = useForm<Values>({ resolver: zodResolver(schema), defaultValues: initial });
   const e = f.formState.errors;
