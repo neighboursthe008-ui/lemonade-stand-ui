@@ -15,3 +15,6 @@
 - Module data source is set in src/config/backendCapabilities.ts + VITE_<MODULE>_DATA_SOURCE — progressive migration.
 - Router is TanStack Router (not React Router DOM) — fixed by the platform.
 - Never call POST /api/v1/queue/{id}/start until backend P0 is fixed — unsafe transaction.
+
+- Hospital (Munab) modules are configs in src/modules/configs/hospital.ts on the shared module engine — one pattern for every department, mock until Laravel APIs exist.
+- Branding lives in src/config/clinic.ts — organisation name is config, never hardcoded.
