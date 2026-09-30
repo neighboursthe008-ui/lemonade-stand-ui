@@ -6,10 +6,10 @@ import {
 } from "recharts";
 import {
   Activity, ArrowUpRight, BadgeDollarSign, Bell, CalendarCheck, CalendarDays, CheckCircle2, ClipboardList, Cloud, FilePlus2,
-  Newspaper, Package, Phone, Plus, ShoppingBag, SquarePen, Stethoscope, TriangleAlert, UserPlus, Users, Wallet, Clock, FileText,
+  Newspaper, Package, Phone, FlaskConical, Boxes, Receipt, Pill, Plus, ShoppingBag, SquarePen, Stethoscope, TriangleAlert, UserPlus, Users, Wallet, Clock, FileText,
 } from "lucide-react";
 import { MockDataBanner } from "@/components/states/MockDataBanner";
-import { overview, revenueByRange, type Range } from "@/mocks/dashboard/overview";
+import { overview, revenueByRange, extraKpis, lowStock, openInvoices, activityPerm, type Range } from "@/mocks/dashboard/overview";
 import { useAuth } from "@/stores/auth";
 
 export const Route = createFileRoute("/app/dashboard")({
@@ -57,24 +57,62 @@ const Legend = ({ items }: { items: [string, string][] }) => (
 function greeting() { const h = new Date().getHours(); return h < 12 ? "Good Morning" : h < 17 ? "Good Afternoon" : "Good Evening"; }
 
 function Dashboard() {
-  const { user } = useAuth();
+  const { user, can } = useAuth();
   const [range, setRange] = useState<Range>("7d");
   const o = overview;
   const total = o.apptBreakdown.reduce((a, b) => a + b.value, 0);
 
-  const kpis = [
-    { icon: Users, label: "Patients", value: o.kpis.patients.toLocaleString(), sub: <><ArrowUpRight className="h-4 w-4 text-success" /><b className="text-success">{o.kpis.patientsTrend}</b> this month</> },
-    { icon: CalendarDays, label: "Today's Appointments", value: String(o.kpis.appointments), sub: <><span className="h-2.5 w-2.5 rounded-full bg-lemon" />{o.kpis.pending} pending</> },
-    { icon: Wallet, label: "Today's Revenue", value: ksh(o.kpis.revenue), sub: <><ArrowUpRight className="h-4 w-4 text-success" /><b className="text-success">{o.kpis.revenueTrend}</b> today</> },
-    { icon: ShoppingBag, label: "Pending Orders", value: String(o.kpis.orders), sub: <><span className="h-2.5 w-2.5 rounded-full bg-lemon" />{o.kpis.awaitingPayment} awaiting payment</> },
-  ];
+  const up = (t: string, w: string) => <><ArrowUpRight className="h-4 w-4 text-success" /><b className="text-success">{t}</b> {w}</>;
+  const dot = (t: string) => <><span className="h-2.5 w-2.5 rounded-full bg-lemon" />{t}</>;
+  const x = extraKpis;
+  const catalog = {
+    patients: { perm: "view_patients", icon: Users, label: "Patients", value: o.kpis.patients.toLocaleString(), sub: up(o.kpis.patientsTrend, "this month") },
+    appts: { perm: "view_appointments", icon: CalendarDays, label: "Today's Appointments", value: String(o.kpis.appointments), sub: dot(`${o.kpis.pending} pending`) },
+    revenue: { perm: ["view_accounting", "view_reports"], icon: Wallet, label: "Today's Revenue", value: ksh(o.kpis.revenue), sub: up(o.kpis.revenueTrend, "today") },
+    collected: { perm: "view_payments", icon: BadgeDollarSign, label: "Collected Today", value: ksh(x.collectedToday), sub: dot("14 M-Pesa payments") },
+    invoices: { perm: "view_invoices", icon: Receipt, label: "Open Invoices", value: String(x.openInvoices), sub: dot("6 overdue") },
+    orders: { perm: "view_inventory", icon: ShoppingBag, label: "Pending Orders", value: String(o.kpis.orders), sub: dot(`${o.kpis.awaitingPayment} awaiting payment`) },
+    lowStock: { perm: "view_inventory", icon: Boxes, label: "Low Stock Items", value: String(x.lowStock), sub: dot("3 expiring in 30 days") },
+    waiting: { perm: "view_queue", icon: Clock, label: "Waiting Now", value: String(x.waitingNow), sub: dot("longest 18 min") },
+    consult: { perm: "view_consultations", icon: Stethoscope, label: "In Consultation", value: String(x.inConsultation), sub: dot(`${o.clinical.completed} completed today`) },
+    lab: { perm: "view_lab_orders", icon: FlaskConical, label: "Lab Results Pending", value: String(x.labPending), sub: dot("1 urgent") },
+    rx: { perm: "prescribe_medication", icon: Pill, label: "Prescriptions Today", value: String(x.rxToday), sub: dot("issued by you") },
+    newPts: { perm: "create_patients", icon: UserPlus, label: "New Registrations", value: String(x.newRegistrations), sub: dot("today") },
+  } as const;
+  type K = keyof typeof catalog;
+  const order: Record<string, K[]> = {
+    super_admin: ["patients", "appts", "revenue", "orders"],
+    dentist: ["waiting", "consult", "lab", "rx"],
+    receptionist: ["appts", "waiting", "newPts", "patients"],
+    cashier: ["collected", "invoices", "patients", "revenue"],
+    inventory_manager: ["lowStock", "orders", "revenue", "patients"],
+  };
+  const role = user?.roles[0] ?? "";
+  const pref = order[role] ?? (Object.keys(catalog) as K[]);
+  const allowed = (k: K) => can(catalog[k].perm as string | string[]);
+  const kpis = [...pref, ...(Object.keys(catalog) as K[])].filter((k, i, a) => a.indexOf(k) === i && allowed(k)).slice(0, 4).map((k) => catalog[k]);
 
   const quick = [
-    { icon: UserPlus, label: "Register Patient", primary: true }, { icon: CalendarCheck, label: "Book Appointment" },
-    { icon: FilePlus2, label: "Create Invoice" }, { icon: BadgeDollarSign, label: "Record Payment" },
-    { icon: Package, label: "Add Product" }, { icon: Newspaper, label: "Create News" },
-    { icon: SquarePen, label: "Create Blog Post" }, { icon: Cloud, label: "Create Campaign" },
-  ];
+    { icon: UserPlus, label: "Register Patient", perm: "create_patients" }, { icon: CalendarCheck, label: "Book Appointment", perm: "create_appointments" },
+    { icon: FilePlus2, label: "Create Invoice", perm: "create_invoices" }, { icon: BadgeDollarSign, label: "Record Payment", perm: "create_payments" },
+    { icon: Pill, label: "Write Prescription", perm: "create_prescriptions" }, { icon: Package, label: "Add Product", perm: "view_inventory" },
+    { icon: Newspaper, label: "Create News", perm: "manage_marketing" }, { icon: SquarePen, label: "Create Blog Post", perm: "manage_marketing" },
+    { icon: Cloud, label: "Create Campaign", perm: "manage_marketing" },
+  ].filter((q) => can(q.perm)).map((q, i) => ({ ...q, primary: i === 0 }));
+
+  const show = {
+    revenue: can(["view_accounting", "view_reports"]),
+    appts: can("view_appointments"),
+    queue: can("view_queue"),
+    clinical: can("view_consultations"),
+    financial: can(["view_invoices", "view_accounting"]),
+    invoices: can("view_invoices") && !can("view_accounting"),
+    inventory: can("view_inventory"),
+    health: !!user?.is_super_admin,
+  };
+  const activity = o.activity.filter((a) => user?.is_super_admin || can(activityPerm[a.text] ?? "__none"));
+  const isDentist = role === "dentist";
+  const roleLabel = role.replace(/_/g, " ");
 
   return (
     <div className="space-y-4">
@@ -83,11 +121,11 @@ function Dashboard() {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="font-display text-2xl font-bold text-primary sm:text-3xl">{greeting()}, {user?.name}</h1>
-          <p className="text-primary/80">Here's what's happening at Lemonade Dental Clinic today.</p>
+          <p className="text-primary/80">Here's what's happening at Lemonade Dental Clinic today. <span className="ml-1 rounded-full bg-accent px-2 py-0.5 text-xs capitalize text-accent-foreground">{roleLabel} view</span></p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <span className="flex items-center gap-2 rounded-full border border-success/30 bg-success/10 px-3 py-1 text-xs text-primary"><span className="h-2.5 w-2.5 rounded-full bg-success" />All systems operational</span>
-          <button onClick={mock} className="flex items-center gap-2 rounded-xl bg-lemon px-5 py-2.5 font-semibold text-lemon-foreground shadow-sm hover:brightness-95"><Plus className="h-5 w-5" />Quick Action</button>
+          {show.health && <span className="flex items-center gap-2 rounded-full border border-success/30 bg-success/10 px-3 py-1 text-xs text-primary"><span className="h-2.5 w-2.5 rounded-full bg-success" />All systems operational</span>}
+          {quick.length > 0 && <button onClick={mock} className="flex items-center gap-2 rounded-xl bg-lemon px-5 py-2.5 font-semibold text-lemon-foreground shadow-sm hover:brightness-95"><Plus className="h-5 w-5" />Quick Action</button>}
         </div>
       </div>
 

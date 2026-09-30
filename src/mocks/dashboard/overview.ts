@@ -50,3 +50,28 @@ export const overview = {
   ],
 };
 export type Overview = typeof overview;
+
+export const extraKpis = { waitingNow: 8, inConsultation: 3, openInvoices: 23, collectedToday: 48200, lowStock: 7, labPending: 3, rxToday: 5, newRegistrations: 4 };
+
+export const lowStock = [
+  { item: "Lidocaine 2% cartridges", onHand: 12, reorder: 50 },
+  { item: "Nitrile gloves (M)", onHand: 3, reorder: 20 },
+  { item: "Composite resin A2", onHand: 4, reorder: 10 },
+  { item: "Prophy paste", onHand: 6, reorder: 15 },
+];
+
+export const openInvoices = [
+  { no: "INV-2026-0094", patient: "Mary Njeri", amount: 4500, status: "Unpaid" },
+  { no: "INV-2026-0096", patient: "Peter Kamau", amount: 12000, status: "Partial" },
+  { no: "INV-2026-0098", patient: "Sarah Wanjiku", amount: 3000, status: "Unpaid" },
+];
+
+/** Activity items carry the permission needed to see them. */
+export const activityPerm: Record<string, string> = {
+  "Patient registered · Mary Wanjiku": "view_patients",
+  "Payment received · KSh 3,000": "view_payments",
+  "Appointment booked · Peter Kamau": "view_appointments",
+  "Order created · INV-2026-0098": "view_inventory",
+  "Blog post published · Oral Health Tips": "manage_marketing",
+  "Backup completed · Full System Backup": "manage_settings",
+};
