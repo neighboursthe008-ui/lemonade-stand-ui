@@ -5,12 +5,13 @@ import { z } from "zod";
 import { CalendarCheck, Phone } from "lucide-react";
 import { PublicShell } from "@/components/layout/PublicShell";
 import { Container, PageHeader } from "@/components/public/PageHeader";
-import { BackendPendingState, EmptyState, ErrorState, LoadingState } from "@/components/states/States";
+import { EmptyState, ErrorState, LoadingState } from "@/components/states/States";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { publicKeys, publicService } from "@/api/public/public.service";
 import { shouldRetryRead } from "@/api/client/http";
+import { getPublicRequestService, type SubmitResult } from "@/services/public/requests.service";
 import { clinic } from "@/config/clinic";
 import { seo } from "@/lib/seo";
 
@@ -30,7 +31,8 @@ function Booking() {
   const [doctor, setDoctor] = useState<number | "">(s.doctor ?? "");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [step, setStep] = useState<"choose" | "details" | "pending">("choose");
+  const [step, setStep] = useState<"choose" | "details" | "done">("choose");
+  const [result, setResult] = useState<SubmitResult | null>(null);
 
   const services = useQuery({ queryKey: publicKeys.services, queryFn: publicService.services, retry: shouldRetryRead });
   const doctors = useQuery({ queryKey: publicKeys.doctors, queryFn: publicService.doctors, retry: shouldRetryRead });
@@ -88,13 +90,14 @@ function Booking() {
               <Button disabled={!service || !doctor || !date || !time} onClick={() => setStep("details")}>Continue</Button>
             </>
           )}
-          {step === "details" && <DetailsForm onBack={() => setStep("choose")} onSubmit={() => setStep("pending")} />}
-          {step === "pending" && (
-            <BackendPendingState feature="Online booking confirmation">
-              Your request has <b>not</b> been sent. The clinic system doesn't yet accept online bookings from this website.
-              Please call <a className="underline" href={clinic.phoneHref}>{clinic.phone}</a> to confirm this time.
-              <div className="mt-4"><Button variant="outline" onClick={() => setStep("choose")}>Change selection</Button></div>
-            </BackendPendingState>
+          {step === "details" && <DetailsForm onBack={() => setStep("choose")} onSubmit={async (v) => { const r = await getPublicRequestService().book({ service_id: Number(service), service_name: svc?.name ?? "", clinician_id: Number(doctor), clinician_name: doc?.name ?? "", date, time, guest_name: v.name, guest_phone: v.phone, ...(v.email ? { guest_email: v.email } : {}) }); setResult(r); setStep("done"); }} />}
+          {step === "done" && result && (
+            <div role="status" className="rounded-lg border border-success/40 bg-success/10 p-6">
+              <p className="flex items-center gap-2 text-lg font-semibold"><CalendarCheck className="h-5 w-5 text-success" />Request received — ref {result.reference}</p>
+              <p className="mt-2 text-sm">{svc?.name} with {doc?.name} on {date} at {time}.</p>
+              {result.development && <p className="mt-3 rounded-md bg-lemon/30 p-3 text-sm"><b>Development booking:</b> {result.message} Call <a className="underline" href={clinic.phoneHref}>{clinic.phone}</a> to confirm a real appointment.</p>}
+              <div className="mt-4"><Button variant="outline" onClick={() => { setStep("choose"); setTime(""); setResult(null); }}>Book another visit</Button></div>
+            </div>
           )}
         </div>
         <aside className="h-fit rounded-lg border bg-card p-5" aria-label="Your selection">
@@ -117,14 +120,16 @@ const details = z.object({
   email: z.string().trim().email("Enter a valid email").max(255).or(z.literal("")),
 });
 
-function DetailsForm({ onBack, onSubmit }: { onBack: () => void; onSubmit: () => void }) {
+function DetailsForm({ onBack, onSubmit }: { onBack: () => void; onSubmit: (v: { name: string; phone: string; email: string }) => Promise<void> }) {
   const [v, setV] = useState({ name: "", phone: "", email: "" });
+  const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<Record<string, string>>({});
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     const r = details.safeParse(v);
     if (!r.success) { setErr(Object.fromEntries(r.error.issues.map((i) => [String(i.path[0]), i.message]))); return; }
-    setErr({}); onSubmit();
+    setErr({}); setBusy(true);
+    onSubmit(r.data).catch(() => setErr({ name: "Could not send your request. Please try again or call us." })).finally(() => setBusy(false));
   };
   const f = (k: keyof typeof v, label: string, type = "text", req = true) => (
     <div className="space-y-1.5">
@@ -137,7 +142,7 @@ function DetailsForm({ onBack, onSubmit }: { onBack: () => void; onSubmit: () =>
     <form onSubmit={submit} noValidate className="space-y-4">
       <h2 className="text-lg font-semibold">Your details</h2>
       <div className="grid gap-4 sm:grid-cols-2">{f("name", "Full name")}{f("phone", "Phone", "tel")}{f("email", "Email", "email", false)}</div>
-      <div className="flex gap-3"><Button type="button" variant="outline" onClick={onBack}>Back</Button><Button type="submit">Request appointment</Button></div>
+      <div className="flex gap-3"><Button type="button" variant="outline" onClick={onBack}>Back</Button><Button type="submit" disabled={busy}>{busy ? "Sending…" : "Request appointment"}</Button></div>
     </form>
   );
 }

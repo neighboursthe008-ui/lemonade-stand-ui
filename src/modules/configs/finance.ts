@@ -130,6 +130,7 @@ export const financeModules: ModuleConfig[] = [
       { key: "post", label: "Post entry", to: "posted", confirm: "Post this entry? Posted entries cannot be edited.", when: (r) => r["status"] === "draft" },
       { key: "reverse", label: "Reverse", to: "reversed", danger: true, confirm: "Create a reversal for this entry?", when: (r) => r["status"] === "posted" },
     ],
+    validate: (v) => (v["debit_account"] && v["debit_account"] === v["credit_account"] ? { credit_account: "Debit and credit accounts must differ" } : {}),
     canCreate: true, canEdit: (r: Row) => r["status"] === "draft", canDelete: false, seedCount: 40,
     seed: (i) => ({ entry_number: code("JE-2026", i), date: day(-(i % 60)), description: pick(["Daily cash takings", "M-Pesa settlement", "Supplies purchase", "Rent — September"], i), debit_account: pick(["1000 Cash", "1010 M-Pesa Till", "5000 Dental Supplies", "5100 Rent"], i), credit_account: pick(["4000 Consultation Revenue", "4010 Treatment Revenue", "2000 Accounts Payable", "1020 Bank — Equity"], i), amount: money(i, 5000, 1500), status: i < 3 ? "draft" : "posted" }),
   },
