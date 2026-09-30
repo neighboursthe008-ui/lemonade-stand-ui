@@ -4,6 +4,7 @@ import { Bell, ChevronDown, ChevronRight, CircleHelp, Home, LogOut, MapPin, Menu
 import { useAuth } from "@/stores/auth";
 import { staffNav } from "@/config/navigation";
 import { Logo } from "./Logo";
+import { GlobalSearch } from "@/components/search/GlobalSearch";
 
 function initials(name?: string) {
   return (name ?? "?").split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase();
@@ -50,6 +51,7 @@ export function StaffShell({ children }: { children: ReactNode }) {
   const { user, logout, isDevSession, activeBranchId, setActiveBranchId } = useAuth();
   const [open, setOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const navigate = useNavigate();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const crumb = staffNav.flatMap((g) => g.items).find((i) => path === i.to || path.startsWith(i.to + "/"))?.label ?? "Dashboard";
@@ -69,7 +71,7 @@ export function StaffShell({ children }: { children: ReactNode }) {
           <p className="truncate text-[11px] text-sidebar-foreground/70">{user?.email}</p>
           {isDevSession && <p className="text-[10px] text-sidebar-primary">Development profile</p>}
         </div>
-        <span title="Settings — later phase" aria-disabled className="text-sidebar-foreground/80"><Settings className="h-4 w-4" /></span>
+        {user?.is_super_admin && <Link to="/app/$module" params={{ module: "settings" }} aria-label="Settings" onClick={() => setOpen(false)} className="text-sidebar-foreground/80 hover:text-sidebar-foreground"><Settings className="h-4 w-4" /></Link>}
         <button onClick={signOut} aria-label="Sign out" className="text-sidebar-foreground/80 hover:text-sidebar-foreground"><LogOut className="h-4 w-4" /></button>
       </div>
     </div>
@@ -93,14 +95,15 @@ export function StaffShell({ children }: { children: ReactNode }) {
             <Home className="h-4 w-4 text-primary" /><ChevronRight className="h-3.5 w-3.5 text-muted-foreground" /><span>{crumb}</span>
           </nav>
           <div className="mx-auto hidden w-full max-w-md md:block">
-            <label className="flex items-center gap-2 rounded-full border bg-background px-4 py-1.5 text-sm text-muted-foreground">
-              <Search className="h-4 w-4" />
-              <input aria-label="Search" placeholder="Search patients, appointments, invoices, orders..." className="w-full bg-transparent outline-none placeholder:text-muted-foreground" />
-            </label>
+            <button onClick={() => setSearchOpen(true)} className="flex w-full items-center gap-2 rounded-full border bg-background px-4 py-1.5 text-left text-sm text-muted-foreground hover:border-primary/40">
+              <Search className="h-4 w-4" /><span className="flex-1 truncate">Search patients, appointments, invoices, orders...</span><kbd className="rounded border px-1.5 text-[10px]">Ctrl K</kbd>
+            </button>
           </div>
+          <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />
           <div className="ml-auto flex items-center gap-3">
-            <span className="relative" title="Notifications — later phase"><Bell className="h-5 w-5 text-primary" />
-              <span className="absolute -right-1.5 -top-1.5 grid h-4 w-4 place-items-center rounded-full bg-lemon text-[10px] font-bold text-lemon-foreground">3</span></span>
+            <button aria-label="Search" className="md:hidden" onClick={() => setSearchOpen(true)}><Search className="h-5 w-5 text-primary" /></button>
+            <Link to="/app/$module" params={{ module: "notifications" }} aria-label="Notifications" className="relative"><Bell className="h-5 w-5 text-primary" />
+              <span className="absolute -right-1.5 -top-1.5 grid h-4 w-4 place-items-center rounded-full bg-lemon text-[10px] font-bold text-lemon-foreground">3</span></Link>
             {user && user.branches.length > 0 && (
               <label className="hidden items-center gap-1.5 rounded-md border px-2 py-1 text-sm sm:flex">
                 <MapPin className="h-4 w-4 text-primary" />
@@ -109,7 +112,7 @@ export function StaffShell({ children }: { children: ReactNode }) {
                 </select>
               </label>
             )}
-            <CircleHelp className="hidden h-5 w-5 text-primary sm:block" aria-label="Help" />
+            <Link to="/app/assistant" aria-label="Help and assistant" className="hidden sm:block"><CircleHelp className="h-5 w-5 text-primary" /></Link>
             <div className="flex items-center gap-2">
               <div className="grid h-8 w-8 place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground">{initials(user?.name)}</div>
               <span className="hidden max-w-[10rem] truncate whitespace-nowrap text-sm font-medium lg:inline">{user?.name}</span>
