@@ -2,8 +2,8 @@ import type { CurrentUser } from "@/types/auth";
 
 /** MOCK development profiles — ids are negative so they never collide with production ids. */
 const branches = [
-  { id: -1, name: "Lemonade — Westlands (dev)", is_primary: true },
-  { id: -2, name: "Lemonade — Kilimani (dev)", is_primary: false },
+  { id: -1, name: "Munab — Westlands (dev)", is_primary: true },
+  { id: -2, name: "Munab — Kilimani (dev)", is_primary: false },
 ];
 const base = { phone: null, organization_id: -1, branch_id: -1, branches, must_change_password: false, pin_verified_at: null };
 
@@ -15,5 +15,8 @@ export const devProfiles: CurrentUser[] = [
   { ...base, id: -101, name: "Dr. Achieng Otieno (dev)", email: "dentist@dev.local", roles: ["dentist"], permissions: [...clinical, "collect_vitals", "create_prescriptions", "prescribe_medication", "edit_dental_chart"], is_super_admin: false },
   { ...base, id: -102, name: "Grace Mwangi (dev)", email: "reception@dev.local", roles: ["receptionist"], permissions: ["view_patients", "create_patients", "edit_patients", "view_appointments", "create_appointments", "view_queue", "view_notifications"], is_super_admin: false },
   { ...base, id: -103, name: "Peter Kamau (dev)", email: "cashier@dev.local", roles: ["cashier"], permissions: ["view_patients", "view_invoices", "create_invoices", "view_payments", "create_payments", "view_notifications"], is_super_admin: false },
+  { ...base, id: -105, name: "Nurse Wairimu (dev)", email: "nurse@dev.local", roles: ["nurse"], permissions: ["view_patients", "view_queue", "collect_vitals", "view_prescriptions", "view_notifications"], is_super_admin: false },
+  { ...base, id: -106, name: "Pharmacist Kiptoo (dev)", email: "pharmacist@dev.local", roles: ["pharmacist"], permissions: ["view_patients", "view_prescriptions", "view_inventory", "view_notifications"], is_super_admin: false },
+  { ...base, id: -107, name: "HR Manager Mwende (dev)", email: "hr@dev.local", roles: ["hr_manager"], permissions: ["view_users", "view_notifications"], is_super_admin: false },
   { ...base, id: -104, name: "Mary Njeri (dev)", email: "inventory@dev.local", roles: ["inventory_manager"], permissions: ["view_inventory", "view_reports", "view_notifications"], is_super_admin: false },
 ];

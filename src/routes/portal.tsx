@@ -17,7 +17,7 @@ import { seo } from "@/lib/seo";
 import { getPatientPortalService, type PortalPatient, type PortalSection } from "@/services/patientPortal/portal.service";
 
 export const Route = createFileRoute("/portal")({
-  head: () => seo("Patient portal", "View your appointments, prescriptions, results, invoices and orders at Lemonade Dental Clinic."),
+  head: () => seo("Patient portal", "View your appointments, prescriptions, results, invoices and orders at Munab Nursing Home."),
   component: Portal,
 });
 

@@ -11,9 +11,9 @@ import { useAuth } from "@/stores/auth";
 
 export const Route = createFileRoute("/app/patients/$id/edit")({
   head: () => ({ meta: [
-    { title: "Edit patient — Lemonade Staff" },
+    { title: "Edit patient — Munab Staff" },
     { name: "description", content: "Update a patient's details." },
-    { property: "og:title", content: "Edit patient — Lemonade Staff" },
+    { property: "og:title", content: "Edit patient — Munab Staff" },
     { property: "og:description", content: "Update patient details." },
     { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
   ] }),

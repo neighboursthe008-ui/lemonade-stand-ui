@@ -7,16 +7,16 @@ import { seo } from "@/lib/seo";
 import h3 from "@/assets/hero3.png.asset.json";
 
 export const Route = createFileRoute("/about")({
-  head: () => seo("About us", "Get to know Lemonade Dental Clinic — our clinic, our team and how visits work."),
+  head: () => seo("About us", "Get to know Munab Nursing Home — our clinic, our team and how visits work."),
   component: About,
 });
 
 function About() {
   return (
     <PublicShell>
-      <PageHeader eyebrow="About" title="A welcoming clinic for the whole family.">Karibu. Here's what to expect when you visit Lemonade Dental Clinic.</PageHeader>
+      <PageHeader eyebrow="About" title="A welcoming clinic for the whole family.">Karibu. Here's what to expect when you visit Munab Nursing Home.</PageHeader>
       <Container className="grid items-center gap-10 md:grid-cols-2">
-        <img src={h3.url} alt="Lemonade Dental Clinic reception" loading="lazy" className="aspect-[16/10] w-full rounded-xl object-cover" />
+        <img src={h3.url} alt="Munab Nursing Home reception" loading="lazy" className="aspect-[16/10] w-full rounded-xl object-cover" />
         <div className="space-y-4">
           <h2 className="text-2xl font-semibold">How a visit works</h2>
           <ol className="space-y-3 text-sm">

@@ -14,7 +14,7 @@ import { getShopService } from "@/services/shop/shop.service";
 import { cart, useCart } from "@/stores/cart";
 
 export const Route = createFileRoute("/shop/")({
-  head: () => seo("Dental care shop", "Toothbrushes, floss, mouthwash and dental care products from Lemonade Dental Clinic."),
+  head: () => seo("Dental care shop", "Toothbrushes, floss, mouthwash and dental care products from Munab Nursing Home."),
   component: Shop,
 });
 

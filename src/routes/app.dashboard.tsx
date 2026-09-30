@@ -19,10 +19,10 @@ import { useAuth } from "@/stores/auth";
 
 export const Route = createFileRoute("/app/dashboard")({
   head: () => ({ meta: [
-    { title: "Dashboard — Lemonade Staff" },
+    { title: "Dashboard — Munab Staff" },
     { name: "description", content: "Today's patients, appointments, revenue and clinic health at a glance." },
-    { property: "og:title", content: "Dashboard — Lemonade Staff" },
-    { property: "og:description", content: "Clinic overview for Lemonade Dental staff." },
+    { property: "og:title", content: "Dashboard — Munab Staff" },
+    { property: "og:description", content: "Clinic overview for Munab staff." },
     { property: "og:type", content: "website" },
     { name: "twitter:card", content: "summary" },
   ] }),
@@ -142,7 +142,7 @@ function Dashboard() {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="font-display text-2xl font-bold text-primary sm:text-3xl">{greeting()}, {user?.name}</h1>
-          <p className="text-primary/80">Here's what's happening at Lemonade Dental Clinic today. <span className="ml-1 rounded-full bg-accent px-2 py-0.5 text-xs capitalize text-accent-foreground">{roleLabel} view</span></p>
+          <p className="text-primary/80">Here's what's happening at Munab Nursing Home today. <span className="ml-1 rounded-full bg-accent px-2 py-0.5 text-xs capitalize text-accent-foreground">{roleLabel} view</span></p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           {show.health && <span className="flex items-center gap-2 rounded-full border border-success/30 bg-success/10 px-3 py-1 text-xs text-primary"><span className="h-2.5 w-2.5 rounded-full bg-success" />All systems operational</span>}
@@ -346,7 +346,7 @@ function Dashboard() {
 
       <footer className="flex flex-wrap items-center justify-end gap-6 border-t pt-3 text-xs text-primary">
         <Link to="/app/assistant" className="hover:underline">Help</Link><Link to="/dev/integration-status" className="hover:underline">Integration status</Link>
-        <span className="text-muted-foreground">© {new Date().getFullYear()} Lemonade Dental Clinic</span>
+        <span className="text-muted-foreground">© {new Date().getFullYear()} Munab Nursing Home</span>
       </footer>
     </div>
   );

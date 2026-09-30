@@ -10,8 +10,8 @@ import { useAuth } from "@/stores/auth";
 
 export const Route = createFileRoute("/app/assistant")({
   head: () => ({ meta: [
-    { title: "AI Assistant — Lemonade Staff" }, { name: "description", content: "Ask the clinic assistant and jump to common tasks." },
-    { property: "og:title", content: "AI Assistant — Lemonade Staff" }, { property: "og:description", content: "Clinic assistant for staff." },
+    { title: "AI Assistant — Munab Staff" }, { name: "description", content: "Ask the clinic assistant and jump to common tasks." },
+    { property: "og:title", content: "AI Assistant — Munab Staff" }, { property: "og:description", content: "Clinic assistant for staff." },
     { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
   ] }),
   component: AssistantPage,

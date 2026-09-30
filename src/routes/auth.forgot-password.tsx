@@ -9,7 +9,7 @@ import { ApiError } from "@/api/client/http";
 
 export const Route = createFileRoute("/auth/forgot-password")({
   head: () => ({ meta: [
-    { title: "Reset your password — Lemonade Dental Clinic" },
+    { title: "Reset your password — Munab Nursing Home" },
     { name: "description", content: "Request a password reset link for your Lemonade staff account." },
     { property: "og:title", content: "Reset password — Lemonade" },
     { property: "og:description", content: "Request a password reset link." },

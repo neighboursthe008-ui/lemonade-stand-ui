@@ -12,7 +12,7 @@ import { getShopService } from "@/services/shop/shop.service";
 import { cart } from "@/stores/cart";
 
 export const Route = createFileRoute("/shop/$id")({
-  head: () => seo("Product — Lemonade Dental shop", "Dental care product details, price and availability."),
+  head: () => seo("Product — Munab shop", "Dental care product details, price and availability."),
   component: Product,
 });
 

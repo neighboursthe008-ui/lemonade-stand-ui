@@ -9,7 +9,7 @@ import { shouldRetryRead } from "@/api/client/http";
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/events")({
-  head: () => seo("Events", "Upcoming events and community activities from Lemonade Dental Clinic."),
+  head: () => seo("Events", "Upcoming events and community activities from Munab Nursing Home."),
   component: Events,
 });
 

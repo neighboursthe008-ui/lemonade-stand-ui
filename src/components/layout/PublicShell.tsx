@@ -8,12 +8,13 @@ import { AssistantWidget } from "@/components/public/AssistantWidget";
 
 const links = [
   { to: "/about", label: "About" },
+  { to: "/departments", label: "Departments" },
   { to: "/services", label: "Services" },
-  { to: "/doctors", label: "Dentists" },
+  { to: "/doctors", label: "Doctors" },
   { to: "/blog", label: "Blog" },
   { to: "/news", label: "News" },
-  { to: "/events", label: "Events" },
-  { to: "/gallery", label: "Gallery" },
+  
+  { to: "/tenders", label: "Tenders" },
   { to: "/shop", label: "Shop" },
   { to: "/portal", label: "My portal" },
   { to: "/contact", label: "Contact" },
@@ -52,12 +53,12 @@ export function PublicShell({ children }: { children: ReactNode }) {
       <main className="flex-1">{children}</main>
       <footer className="bg-brand text-brand-foreground">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:grid-cols-2 sm:px-6 lg:grid-cols-4">
-          <div><p className="font-display text-lg font-semibold">Lemonade<span className="text-aqua">.</span></p><p className="mt-2 text-sm text-brand-foreground/70">Dental Clinic</p></div>
+          <div><p className="font-display text-lg font-semibold">{clinic.name}</p><p className="mt-2 text-sm text-brand-foreground/70">{clinic.tagline}</p></div>
           <div>
             <p className="text-sm font-semibold">Visit</p>
             <ul className="mt-3 space-y-2 text-sm text-brand-foreground/75">
               <li><Link to="/services" className="hover:text-brand-foreground">Services</Link></li>
-              <li><Link to="/doctors" className="hover:text-brand-foreground">Dentists</Link></li>
+              <li><Link to="/doctors" className="hover:text-brand-foreground">Doctors</Link></li>
               <li><Link to="/appointments" className="hover:text-brand-foreground">Book a visit</Link></li>
             </ul>
           </div>
@@ -67,6 +68,9 @@ export function PublicShell({ children }: { children: ReactNode }) {
               <li><Link to="/blog" className="hover:text-brand-foreground">Blog</Link></li>
               <li><Link to="/news" className="hover:text-brand-foreground">News</Link></li>
               <li><Link to="/testimonials" className="hover:text-brand-foreground">Testimonials</Link></li>
+              <li><Link to="/tenders" className="hover:text-brand-foreground">Tenders</Link></li>
+              <li><Link to="/events" className="hover:text-brand-foreground">Events</Link></li>
+              <li><Link to="/gallery" className="hover:text-brand-foreground">Gallery</Link></li>
             </ul>
           </div>
           <div>

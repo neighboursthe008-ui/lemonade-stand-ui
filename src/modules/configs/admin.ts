@@ -69,7 +69,7 @@ export const adminModules: ModuleConfig[] = [
     columns: [{ key: "path", label: "Page" }, { key: "meta_title", label: "Title" }, { key: "indexed", label: "Indexed", format: "bool" }],
     fields: [{ name: "path", label: "Path", type: "text", required: true }, { name: "meta_title", label: "Meta title (≤60)", type: "text", required: true }, { name: "meta_description", label: "Meta description (≤160)", type: "textarea", required: true, wide: true }, { name: "indexed", label: "Allow search engines", type: "checkbox" }],
     canCreate: true, canEdit: true, canDelete: true, seedCount: 6,
-    seed: (i) => ({ path: pick(["/", "/services", "/doctors", "/appointments", "/blog", "/contact"], i), meta_title: pick(["Lemonade Dental Clinic", "Dental services", "Our dentists", "Book a visit", "Dental blog", "Contact us"], i), meta_description: "Development SEO description.", indexed: true }),
+    seed: (i) => ({ path: pick(["/", "/services", "/doctors", "/appointments", "/blog", "/contact"], i), meta_title: pick(["Munab Nursing Home", "Dental services", "Our dentists", "Book a visit", "Dental blog", "Contact us"], i), meta_description: "Development SEO description.", indexed: true }),
   },
   {
     key: "integrations", title: "Integrations", singular: "Integration", section: "Content & Marketing", icon: Plug, description: "M-Pesa, SMS, email, Google, Meta and social connections.", superAdminOnly: true, backendNote: SYS,
@@ -106,14 +106,14 @@ export const adminModules: ModuleConfig[] = [
     fields: [{ name: "name", label: "Name", type: "text", required: true }, { name: "town", label: "Town", type: "text", required: true }, { name: "phone", label: "Phone", type: "tel" }],
     actions: [{ key: "toggle", label: "Activate / deactivate", confirm: "Change this branch's active state?", mock: (r) => ({ is_active: !r["is_active"] }) }],
     canCreate: true, canEdit: true, canDelete: false, seedCount: 2,
-    seed: (i) => ({ name: pick(["Lemonade — Westlands (dev)", "Lemonade — Kilimani (dev)"], i), town: "Nairobi", phone: null, patients: 600 + i * 48, revenue_month: 820000 - i * 120000, is_active: true }),
+    seed: (i) => ({ name: pick(["Munab — Main (dev)", "Munab — Annex (dev)"], i), town: "Nairobi", phone: null, patients: 600 + i * 48, revenue_month: 820000 - i * 120000, is_active: true }),
   },
   {
     key: "organization", title: "Organization", singular: "Setting", section: "System", icon: Building2, description: "Clinic identity, branding and theme.", superAdminOnly: true, backendNote: SYS,
     columns: [{ key: "label", label: "Setting" }, { key: "value", label: "Value" }],
     fields: [{ name: "label", label: "Setting", type: "text", required: true }, { name: "value", label: "Value", type: "text", required: true, wide: true }],
     canCreate: false, canEdit: true, canDelete: false, seedCount: 6,
-    seed: (i) => pick([{ label: "Clinic name", value: "Lemonade Dental Clinic" }, { label: "Phone", value: "0757 117 313" }, { label: "Primary colour", value: "Deep navy" }, { label: "Accent colour", value: "Lemon yellow" }, { label: "Currency", value: "KES" }, { label: "Time zone", value: "Africa/Nairobi" }], 5 - i),
+    seed: (i) => pick([{ label: "Clinic name", value: "Munab Nursing Home" }, { label: "Phone", value: "0757 117 313" }, { label: "Primary colour", value: "Deep navy" }, { label: "Accent colour", value: "Lemon yellow" }, { label: "Currency", value: "KES" }, { label: "Time zone", value: "Africa/Nairobi" }], 5 - i),
   },
   {
     key: "settings", title: "Settings", singular: "Setting", section: "System", icon: Settings, description: "System mode, fees display, payments and policies.", superAdminOnly: true, backendNote: SYS,

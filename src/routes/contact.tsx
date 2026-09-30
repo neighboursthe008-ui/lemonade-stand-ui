@@ -15,7 +15,7 @@ import { seo } from "@/lib/seo";
 import { getPublicRequestService, type SubmitResult } from "@/services/public/requests.service";
 
 export const Route = createFileRoute("/contact")({
-  head: () => seo("Contact us", "Call or message Lemonade Dental Clinic to book or ask a question."),
+  head: () => seo("Contact us", "Call or message Munab Nursing Home to book or ask a question."),
   component: Contact,
 });
 

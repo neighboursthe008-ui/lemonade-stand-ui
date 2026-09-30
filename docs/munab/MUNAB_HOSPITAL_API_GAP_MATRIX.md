@@ -1,0 +1,4 @@
+# API gap matrix
+Every module below has NO Laravel JSON API. Laravel must add migrations + endpoints; then add a `laravel` binding in src/modules/configs/hospital.ts and register paths in src/api/registry.ts.
+Departments, Service Catalogue, OPD, Emergency, Admissions, Referrals, Wards, Beds, Inpatients, Nursing Notes, Medication Rounds, Shift Handover, Maternity, Paediatric Growth, Theatre, Dispensing, Lab Test Catalogue, Insurance Providers, Pre-authorisations, Claims, Employees, Attendance, Leave, Payroll, Recruitment, Purchase Requests, Quotations, Goods Received, Tenders (staff + public /tenders), SMS Templates, Bulk SMS, SMS Log
+Rules for Laravel: bed transfers transactional; pharmacy dispensing deducts stock server-side; payroll computed server-side with configurable statutory rates; SMS sent via queued jobs with consent checks; tender evaluation data never exposed publicly.

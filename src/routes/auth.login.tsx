@@ -15,9 +15,9 @@ import { Logo } from "@/components/layout/Logo";
 
 export const Route = createFileRoute("/auth/login")({
   head: () => ({ meta: [
-    { title: "Staff sign in — Lemonade Dental Clinic" },
-    { name: "description", content: "Sign in to the Lemonade Dental Clinic staff workspace." },
-    { property: "og:title", content: "Staff sign in — Lemonade" },
+    { title: "Staff sign in — Munab Nursing Home" },
+    { name: "description", content: "Sign in to the Munab Nursing Home staff workspace." },
+    { property: "og:title", content: "Staff sign in — Munab" },
     { property: "og:description", content: "Staff workspace sign in." },
   ] }),
   component: LoginPage,
@@ -53,7 +53,7 @@ function LoginPage() {
         <div className="w-full max-w-sm">
           <div className="mb-8 md:hidden"><Logo /></div>
           <h1 className="text-2xl font-semibold">Staff sign in</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Use your Lemonade account.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Use your Munab account.</p>
           <form onSubmit={onSubmit} noValidate className="mt-6 space-y-4">
             {serverError && <p role="alert" className="rounded-md border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive">{serverError}</p>}
             <div className="space-y-1.5">
