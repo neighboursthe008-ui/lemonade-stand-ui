@@ -6,10 +6,10 @@ const c = [36000, 45000, 50000, 48000, 55000, 77000, 66000];
 const t = [18000, 25000, 30000, 29000, 34000, 46000, 38000];
 const s = [2000, 7000, 11000, 12000, 11000, 16000, 13000];
 
-function scale(n: number, f: number) { return Math.round(n * f); }
+function scale(n: number | undefined, f: number) { return Math.round((n ?? 0) * f); }
 
 export const revenueByRange: Record<Range, { label: string; consultations: number; treatments: number; shop: number }[]> = {
-  "7d": days.map((label, i) => ({ label, consultations: c[i], treatments: t[i], shop: s[i] })),
+  "7d": days.map((label, i) => ({ label, consultations: c[i] ?? 0, treatments: t[i] ?? 0, shop: s[i] ?? 0 })),
   "30d": ["Wk 1", "Wk 2", "Wk 3", "Wk 4"].map((label, i) => ({ label, consultations: scale(c[i + 2], 6), treatments: scale(t[i + 2], 6), shop: scale(s[i + 2], 6) })),
   "3m": ["Jul", "Aug", "Sep"].map((label, i) => ({ label, consultations: scale(c[i + 3], 24), treatments: scale(t[i + 3], 24), shop: scale(s[i + 3], 24) })),
   "12m": ["Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"].map((label, i) => ({ label, consultations: scale(c[i % 7], 22), treatments: scale(t[i % 7], 22), shop: scale(s[i % 7], 22) })),
