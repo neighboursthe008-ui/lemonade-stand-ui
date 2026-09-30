@@ -2,8 +2,8 @@ import type { CurrentUser } from "@/types/auth";
 
 /** MOCK development profiles — ids are negative so they never collide with production ids. */
 const branches = [
-  { id: -1, name: "Lemonade — Westlands (dev)", is_primary: true },
-  { id: -2, name: "Lemonade — Kilimani (dev)", is_primary: false },
+  { id: -1, name: "Munab — Westlands (dev)", is_primary: true },
+  { id: -2, name: "Munab — Kilimani (dev)", is_primary: false },
 ];
 const base = { phone: null, organization_id: -1, branch_id: -1, branches, must_change_password: false, pin_verified_at: null };
 

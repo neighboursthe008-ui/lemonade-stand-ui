@@ -61,7 +61,7 @@ export function StaffShell({ children }: { children: ReactNode }) {
     <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
       <div className="px-5 pb-2 pt-4">
         <Logo inverted />
-        <p className="mt-0.5 pl-11 text-[11px] text-sidebar-foreground/70">Kerugoya, Kenya</p>
+        
       </div>
       <SidebarNav onNavigate={() => setOpen(false)} />
       <div className="flex items-center gap-3 border-t border-sidebar-border p-4">
