@@ -41,7 +41,7 @@ export function ErrorState({ error, onRetry }: { error: unknown; onRetry?: () =>
   );
 }
 
-export function ValidationSummary({ errors }: { errors?: Record<string, string[]> }) {
+export function ValidationSummary({ errors }: { errors?: Record<string, string[]> | undefined }) {
   if (!errors || !Object.keys(errors).length) return null;
   return (
     <div role="alert" className="rounded-md border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive">

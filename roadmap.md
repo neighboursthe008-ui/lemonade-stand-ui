@@ -3,7 +3,7 @@
 - [x] Phase 1 — architecture, API client + registry, capabilities, auth (+dev profiles), nav, states, staff shell, dashboard (mock), /dev/integration-status
 - [x] Hero carousel with uploaded clinic photos (45s interval)
 - [x] Phase 2 — public website (shop + campaign landing pages move to Phase 11/12)
-- [ ] Phase 3 — patients
+- [x] Phase 3 — patients (list, register, profile, edit, history)
 - [ ] Phase 4 — appointments
 - [ ] Phase 5 — clinical (queue start BLOCKED P0)
 - [ ] Phase 6 — billing/payments/reports

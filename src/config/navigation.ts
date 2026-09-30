@@ -17,7 +17,7 @@ export const staffNav: NavGroup[] = [
     { label: "Global Search", to: "/app/search", icon: Search },
   ] },
   { label: "Clinical", items: [
-    { label: "Patients", to: "/app/patients", icon: User, permission: "view_patients" },
+    { label: "Patients", to: "/app/patients", icon: User, permission: "view_patients", ready: true },
     { label: "Appointments", to: "/app/appointments", icon: CalendarDays, permission: "view_appointments" },
     { label: "Waiting List", to: "/app/queue", icon: Clock, permission: "view_queue" },
     { label: "Consultations", to: "/app/consultations", icon: Stethoscope, permission: "view_consultations" },
