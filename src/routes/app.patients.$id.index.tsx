@@ -1,10 +1,15 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
-import { ArrowLeft, HeartPulse, Pencil, Pill, Stethoscope, TriangleAlert, User } from "lucide-react";
+import { ArrowLeft, ChevronDown, Pencil, Printer, TriangleAlert, User } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { PatientModuleTab } from "@/components/patients/PatientModuleTab";
+import { Odontogram } from "@/components/clinical/Odontogram";
 import { Button } from "@/components/ui/button";
 import { MockDataBanner } from "@/components/states/MockDataBanner";
-import { EmptyState, ErrorState, ForbiddenState, LoadingState } from "@/components/states/States";
+import { ErrorState, ForbiddenState, LoadingState } from "@/components/states/States";
 import { shouldRetryRead } from "@/api/client/http";
 import { getPatientRepository } from "@/repositories/patients";
 import { useAuth } from "@/stores/auth";
@@ -28,26 +33,45 @@ const Panel = ({ title, children }: { title: string; children: ReactNode }) => (
   <section className="rounded-xl border bg-card p-4 shadow-sm"><h2 className="mb-2 font-display text-base font-bold text-primary">{title}</h2>{children}</section>
 );
 
-type Tab = "consultations" | "prescriptions" | "vitals";
 
 function PatientProfile() {
   const { id } = Route.useParams();
   const pid = Number(id);
   const { can, isDevSession } = useAuth();
   const repo = getPatientRepository(isDevSession);
+  const nav = useNavigate();
+  const [letter, setLetter] = useState<null | "certificate" | "referral">(null);
+  const [letterText, setLetterText] = useState("");
   const tabs = ([
-    ["consultations", "Consultations", Stethoscope, "view_consultations"],
-    ["prescriptions", "Prescriptions", Pill, "view_prescriptions"],
-    ["vitals", "Vitals", HeartPulse, "view_consultations"],
-  ] as const).filter((t) => can(t[3]));
-  const [tab, setTab] = useState<Tab | undefined>(tabs[0]?.[0]);
-
+    ["appointments", "Appointments", "view_appointments"], ["consultations", "Consultations", "view_consultations"], ["vitals", "Vitals", "view_consultations"],
+    ["dental", "Dental chart", "view_dental_chart"], ["treatment-plans", "Treatment plans", "view_consultations"], ["prescriptions", "Prescriptions", "view_prescriptions"],
+    ["lab-orders", "Lab", "view_lab_orders"], ["radiology", "Radiology", "view_radiology_orders"], ["invoices", "Invoices", "view_invoices"], ["payments", "Payments", "view_payments"],
+  ] as const).filter((t) => can(t[2]));
+  const [tab, setTab] = useState<string | undefined>(tabs[0]?.[0]);
   const q = useQuery({ queryKey: ["patient", repo.source, pid], queryFn: () => repo.get(pid), retry: shouldRetryRead, enabled: can("view_patients") });
-  const h = useQuery({
-    queryKey: ["patient-history", repo.source, pid, tab],
-    queryFn: async () => (tab === "consultations" ? { c: await repo.consultations(pid) } : tab === "prescriptions" ? { r: await repo.prescriptions(pid) } : { v: await repo.vitals(pid) }),
-    enabled: !!tab && q.isSuccess, retry: shouldRetryRead,
-  });
+  const go = (module: string) => nav({ to: "/app/$module", params: { module }, search: { new: 1, patient_id: pid } });
+  const actions: [string, string, string | string[], () => void][] = [
+    ["Clinical", "Book appointment", "create_appointments", () => go("appointments")],
+    ["Clinical", "Collect vitals", "collect_vitals", () => go("vitals")],
+    ["Clinical", "Create consultation", "view_consultations", () => go("consultations")],
+    ["Clinical", "Create treatment plan", "view_consultations", () => go("treatment-plans")],
+    ["Clinical", "Update dental chart", "edit_dental_chart", () => setTab("dental")],
+    ["Clinical", "Create prescription", "create_prescriptions", () => go("prescriptions")],
+    ["Clinical", "Create lab order", "view_lab_orders", () => go("lab-orders")],
+    ["Clinical", "Order radiology", "view_radiology_orders", () => go("radiology")],
+    ["Billing", "Create invoice", "create_invoices", () => go("invoices")],
+    ["Billing", "Process payment", "create_payments", () => go("payments")],
+    ["Billing", "Receipts", "view_payments", () => nav({ to: "/app/$module", params: { module: "receipts" } })],
+    ["Documents", "Update care status / details", "edit_patients", () => nav({ to: "/app/patients/$id/edit", params: { id } })],
+    ["Documents", "Print patient summary", "view_patients", () => window.print()],
+    ["Documents", "Medical certificate", "view_consultations", () => setLetter("certificate")],
+    ["Documents", "Referral letter", "view_consultations", () => setLetter("referral")],
+    ["Documents", "Download records (JSON)", "view_patients", () => {
+      const blob = new Blob([JSON.stringify(q.data, null, 2)], { type: "application/json" });
+      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `${q.data?.patient_number ?? "patient"}.json`; a.click(); URL.revokeObjectURL(a.href);
+    }],
+  ];
+  const allowedActions = actions.filter((x) => can(x[2]));
 
   if (!can("view_patients")) return <ForbiddenState />;
   if (q.isLoading) return <LoadingState />;
@@ -68,6 +92,14 @@ function PatientProfile() {
         </div>
         <span className={`rounded-full px-3 py-1 text-xs font-medium ${p.is_active ? "bg-success/15 text-success" : "bg-muted text-muted-foreground"}`}>{p.is_active ? "Active" : "Inactive"}</span>
         {can("edit_patients") && <Button asChild variant="outline" size="sm"><Link to="/app/patients/$id/edit" params={{ id }}><Pencil className="mr-1 h-4 w-4" />Edit</Link></Button>}
+        {allowedActions.length > 0 && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild><Button size="sm" className="bg-lemon text-lemon-foreground hover:bg-lemon/90">Actions<ChevronDown className="ml-1 h-4 w-4" /></Button></DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-60">
+              {["Clinical", "Billing", "Documents"].map((g, gi) => { const items = allowedActions.filter((x) => x[0] === g); return items.length ? <div key={g}>{gi > 0 && <DropdownMenuSeparator />}<DropdownMenuLabel>{g}</DropdownMenuLabel>{items.map((x) => <DropdownMenuItem key={x[1]} onSelect={x[3]}>{x[1]}</DropdownMenuItem>)}</div> : null; })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
 
       {p.allergies && (
@@ -98,29 +130,29 @@ function PatientProfile() {
       {tabs.length > 0 && (
         <section className="rounded-xl border bg-card shadow-sm">
           <div role="tablist" className="flex gap-1 overflow-x-auto border-b px-2">
-            {tabs.map(([k, l, Icon]) => (
+            {tabs.map(([k, l]) => (
               <button key={k} role="tab" aria-selected={tab === k} onClick={() => setTab(k)}
-                className={`flex items-center gap-1.5 border-b-2 px-3 py-3 text-sm ${tab === k ? "border-lemon font-semibold text-primary" : "border-transparent text-muted-foreground hover:text-primary"}`}>
-                <Icon className="h-4 w-4" />{l}
-              </button>
+                className={`whitespace-nowrap border-b-2 px-3 py-3 text-sm ${tab === k ? "border-lemon font-semibold text-primary" : "border-transparent text-muted-foreground hover:text-primary"}`}>{l}</button>
             ))}
           </div>
-          <div className="p-4">
-            {h.isLoading ? <LoadingState /> : h.isError ? <ErrorState error={h.error} onRetry={() => h.refetch()} /> : h.data && (
-              "c" in h.data ? (h.data.c.length ? <ul className="divide-y">{h.data.c.map((c) => (
-                <li key={c.id} className="py-3"><div className="flex justify-between gap-2"><b className="text-primary">{c.reason ?? "Consultation"}</b><span className="text-xs text-muted-foreground">{fmt(c.consulted_at)} · <span className="capitalize">{c.status}</span></span></div>
-                  {c.clinical_notes && <p className="mt-1 text-sm text-muted-foreground">{c.clinical_notes}</p>}</li>))}</ul> : <EmptyState title="No consultations yet" />)
-              : "r" in h.data ? (h.data.r.length ? <ul className="divide-y">{h.data.r.map((r) => (
-                <li key={r.id} className="py-3"><p className="text-xs text-muted-foreground">{fmt(r.created_at)} · <span className="capitalize">{r.status}</span></p>
-                  <ul className="mt-1 text-sm">{r.items?.map((i) => <li key={i.id}><b className="text-primary">{i.drug_name}</b> — {[i.dosage, i.frequency, i.duration].filter(Boolean).join(", ")}</li>)}</ul></li>))}</ul> : <EmptyState title="No prescriptions yet" />)
-              : (h.data.v.length ? <div className="overflow-x-auto"><table className="w-full min-w-[520px] text-sm">
-                  <thead className="text-left text-[11px] uppercase text-muted-foreground"><tr>{["Date", "BP", "Pulse", "Temp °C", "Weight kg", "SpO₂ %"].map((x) => <th key={x} className="py-2">{x}</th>)}</tr></thead>
-                  <tbody>{h.data.v.map((v) => <tr key={v.id} className="border-t tabular-nums"><td className="py-2">{fmt(v.created_at)}</td><td>{v.bp ?? "—"}</td><td>{v.pulse ?? "—"}</td><td>{v.temperature ?? "—"}</td><td>{v.weight ?? "—"}</td><td>{v.oxygen_saturation ?? "—"}</td></tr>)}</tbody>
-                </table></div> : <EmptyState title="No vitals recorded yet" />)
-            )}
-          </div>
+          <div className="p-4">{tab === "dental" ? <Odontogram patientId={pid} /> : tab ? <PatientModuleTab key={tab} moduleKey={tab} patientId={pid} /> : null}</div>
         </section>
       )}
+
+      <Dialog open={!!letter} onOpenChange={(o) => !o && setLetter(null)}>
+        <DialogContent className="sm:max-w-xl">
+          <DialogHeader><DialogTitle>{letter === "certificate" ? "Medical certificate" : "Referral letter"}</DialogTitle><DialogDescription>Generated in the browser for printing. Not stored in the clinic system.</DialogDescription></DialogHeader>
+          <div className="space-y-2 rounded-md border bg-background p-4 text-sm">
+            <p className="font-display font-bold text-primary">Lemonade Dental Clinic · 0757 117 313</p>
+            <p>Date: {new Date().toLocaleDateString("en-KE")}</p>
+            <p>Patient: <b>{p.full_name}</b> ({p.patient_number}){p.age != null ? `, ${p.age} years` : ""}</p>
+            <p>{letter === "certificate" ? "This is to certify that the above-named patient was seen at our clinic and:" : "Kindly see the above-named patient for further management. Reason for referral:"}</p>
+            <Textarea rows={4} value={letterText} onChange={(e) => setLetterText(e.target.value)} placeholder={letter === "certificate" ? "e.g. is advised to rest for 2 days" : "e.g. impacted 38, specialist surgical opinion"} aria-label="Letter details" />
+            <p className="pt-6">Signed: ______________________</p>
+          </div>
+          <div className="flex justify-end gap-2"><Button variant="outline" onClick={() => setLetter(null)}>Close</Button><Button onClick={() => window.print()} disabled={!letterText.trim()}><Printer className="mr-1 h-4 w-4" />Print</Button></div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
