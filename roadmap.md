@@ -21,9 +21,9 @@
 - [x] Global search (Ctrl/⌘K), reports, staff AI assistant
 - [x] Dashboard: every button/quick action wired; counts from shared dev records
 - [x] Patient profile: Actions menu, 10 record tabs, FDI odontogram, certificate/referral letters
-- [ ] Public booking + contact via mock services
-- [ ] Patient portal screens
-- [ ] Public shop / cart / checkout
-- [ ] Journal entry debit/credit balance validation
-- [ ] Seven documentation reports
+- [x] Public booking + contact via mock services
+- [x] Patient portal screens
+- [x] Public shop / cart / checkout
+- [x] Journal entry debit/credit balance validation
+- [x] Seven documentation reports
 - [ ] Full regression pass at all widths
