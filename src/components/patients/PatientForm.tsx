@@ -49,7 +49,7 @@ const clean = (v: Values): PatientInput => {
   return out as unknown as PatientInput;
 };
 
-function Field({ label, error, children, wide }: { label: string; error?: string; children: ReactNode; wide?: boolean }) {
+function Field({ label, error, children, wide }: { label: string; error?: string | undefined; children: ReactNode; wide?: boolean }) {
   return (
     <label className={`block text-sm ${wide ? "sm:col-span-2" : ""}`}>
       <span className="mb-1 block font-medium text-primary">{label}</span>{children}
