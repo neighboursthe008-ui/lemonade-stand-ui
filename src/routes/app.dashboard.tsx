@@ -129,7 +129,7 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className={`grid gap-4 sm:grid-cols-2 ${["xl:grid-cols-1", "xl:grid-cols-1", "xl:grid-cols-2", "xl:grid-cols-3", "xl:grid-cols-4"][kpis.length]}`}>
         {kpis.map((k) => (
           <div key={k.label} className="flex items-center gap-4 rounded-xl border bg-card p-4 shadow-sm">
             <span className="grid h-14 w-14 shrink-0 place-items-center rounded-xl bg-accent text-primary"><k.icon className="h-7 w-7" /></span>
@@ -275,7 +275,7 @@ function Dashboard() {
               </ResponsiveContainer>
             </div>
             <div className="flex gap-2 sm:flex-col">
-              <button onClick={mock} className="rounded-md bg-lemon px-4 py-2 text-xs font-semibold text-lemon-foreground">View Accounting</button>
+              {can("view_accounting") && <button onClick={mock} className="rounded-md bg-lemon px-4 py-2 text-xs font-semibold text-lemon-foreground">View Accounting</button>}
               <button onClick={mock} className="rounded-md border border-primary px-4 py-2 text-xs font-medium text-primary">View Reports</button>
             </div>
           </div>
