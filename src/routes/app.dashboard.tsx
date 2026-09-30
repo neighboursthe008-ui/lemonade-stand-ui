@@ -176,7 +176,7 @@ function Dashboard() {
 
         <Card title="Waiting List" icon={Users}>
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[420px] text-sm">
+            <table className="w-full text-xs">
               <thead className="bg-muted text-[10px] uppercase tracking-wide text-muted-foreground">
                 <tr>{["#", "Patient", "Time", "Service", "Status"].map((h) => <th key={h} className="px-3 py-2 text-left font-semibold">{h}</th>)}</tr>
               </thead>
