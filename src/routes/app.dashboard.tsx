@@ -47,8 +47,8 @@ function Dashboard() {
               <h2 id="wk" className="text-base font-semibold">Appointments this week</h2>
               <div className="mt-6 flex h-40 items-end gap-3">
                 {q.data.appointmentsByDay.map((d) => (
-                  <div key={d.day} className="flex flex-1 flex-col items-center gap-2">
-                    <div className="w-full rounded-t bg-aqua" style={{ height: `${(d.count / max) * 100}%` }} title={`${d.count} appointments`} />
+                  <div key={d.day} className="flex h-full flex-1 flex-col items-center justify-end gap-2">
+                    <div className="w-full rounded-t bg-aqua" style={{ height: `${(d.count / max) * 85}%` }} title={`${d.count} appointments`} />
                     <span className="text-xs text-muted-foreground">{d.day}</span>
                   </div>
                 ))}
