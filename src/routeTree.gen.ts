@@ -15,10 +15,12 @@ import { Route as AppRouteImport } from './routes/app'
 import { Route as AppointmentsRouteImport } from './routes/appointments'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as DepartmentsRouteImport } from './routes/departments'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as PortalRouteImport } from './routes/portal'
+import { Route as TendersRouteImport } from './routes/tenders'
 import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as AppModuleRouteImport } from './routes/app.$module'
 import { Route as AppAssistantRouteImport } from './routes/app.assistant'
@@ -71,6 +73,11 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DepartmentsRoute = DepartmentsRouteImport.update({
+  id: '/departments',
+  path: '/departments',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EventsRoute = EventsRouteImport.update({
   id: '/events',
   path: '/events',
@@ -89,6 +96,11 @@ const NewsRoute = NewsRouteImport.update({
 const PortalRoute = PortalRouteImport.update({
   id: '/portal',
   path: '/portal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TendersRoute = TendersRouteImport.update({
+  id: '/tenders',
+  path: '/tenders',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TestimonialsRoute = TestimonialsRouteImport.update({
@@ -204,10 +216,12 @@ export interface FileRoutesByFullPath {
   '/appointments': typeof AppointmentsRoute
   '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
+  '/departments': typeof DepartmentsRoute
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
   '/news': typeof NewsRoute
   '/portal': typeof PortalRoute
+  '/tenders': typeof TendersRoute
   '/testimonials': typeof TestimonialsRoute
   '/app/$module': typeof AppModuleRoute
   '/app/assistant': typeof AppAssistantRoute
@@ -237,10 +251,12 @@ export interface FileRoutesByTo {
   '/appointments': typeof AppointmentsRoute
   '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
+  '/departments': typeof DepartmentsRoute
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
   '/news': typeof NewsRoute
   '/portal': typeof PortalRoute
+  '/tenders': typeof TendersRoute
   '/testimonials': typeof TestimonialsRoute
   '/app/$module': typeof AppModuleRoute
   '/app/assistant': typeof AppAssistantRoute
@@ -271,10 +287,12 @@ export interface FileRoutesById {
   '/appointments': typeof AppointmentsRoute
   '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
+  '/departments': typeof DepartmentsRoute
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
   '/news': typeof NewsRoute
   '/portal': typeof PortalRoute
+  '/tenders': typeof TendersRoute
   '/testimonials': typeof TestimonialsRoute
   '/app/$module': typeof AppModuleRoute
   '/app/assistant': typeof AppAssistantRoute
@@ -306,10 +324,12 @@ export interface FileRouteTypes {
     | '/appointments'
     | '/cart'
     | '/contact'
+    | '/departments'
     | '/events'
     | '/gallery'
     | '/news'
     | '/portal'
+    | '/tenders'
     | '/testimonials'
     | '/app/$module'
     | '/app/assistant'
@@ -339,10 +359,12 @@ export interface FileRouteTypes {
     | '/appointments'
     | '/cart'
     | '/contact'
+    | '/departments'
     | '/events'
     | '/gallery'
     | '/news'
     | '/portal'
+    | '/tenders'
     | '/testimonials'
     | '/app/$module'
     | '/app/assistant'
@@ -372,10 +394,12 @@ export interface FileRouteTypes {
     | '/appointments'
     | '/cart'
     | '/contact'
+    | '/departments'
     | '/events'
     | '/gallery'
     | '/news'
     | '/portal'
+    | '/tenders'
     | '/testimonials'
     | '/app/$module'
     | '/app/assistant'
@@ -406,10 +430,12 @@ export interface RootRouteChildren {
   AppointmentsRoute: typeof AppointmentsRoute
   CartRoute: typeof CartRoute
   ContactRoute: typeof ContactRoute
+  DepartmentsRoute: typeof DepartmentsRoute
   EventsRoute: typeof EventsRoute
   GalleryRoute: typeof GalleryRoute
   NewsRoute: typeof NewsRoute
   PortalRoute: typeof PortalRoute
+  TendersRoute: typeof TendersRoute
   TestimonialsRoute: typeof TestimonialsRoute
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthLoginRoute: typeof AuthLoginRoute
@@ -468,6 +494,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/departments': {
+      id: '/departments'
+      path: '/departments'
+      fullPath: '/departments'
+      preLoaderRoute: typeof DepartmentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/events': {
       id: '/events'
       path: '/events'
@@ -494,6 +527,13 @@ declare module '@tanstack/react-router' {
       path: '/portal'
       fullPath: '/portal'
       preLoaderRoute: typeof PortalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tenders': {
+      id: '/tenders'
+      path: '/tenders'
+      fullPath: '/tenders'
+      preLoaderRoute: typeof TendersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/testimonials': {
@@ -679,10 +719,12 @@ const rootRouteChildren: RootRouteChildren = {
   AppointmentsRoute: AppointmentsRoute,
   CartRoute: CartRoute,
   ContactRoute: ContactRoute,
+  DepartmentsRoute: DepartmentsRoute,
   EventsRoute: EventsRoute,
   GalleryRoute: GalleryRoute,
   NewsRoute: NewsRoute,
   PortalRoute: PortalRoute,
+  TendersRoute: TendersRoute,
   TestimonialsRoute: TestimonialsRoute,
   AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthLoginRoute: AuthLoginRoute,
