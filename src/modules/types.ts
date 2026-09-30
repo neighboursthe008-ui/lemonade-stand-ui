@@ -75,6 +75,8 @@ export interface ModuleConfig {
   /** Why this module runs on development data. */
   backendNote?: string;
   workflowNote?: string;
+  /** Cross-field validation: return field → message. */
+  validate?: (values: Record<string, unknown>) => Record<string, string>;
   seed: (i: number) => Omit<Row, "id">;
   seedCount: number;
 }

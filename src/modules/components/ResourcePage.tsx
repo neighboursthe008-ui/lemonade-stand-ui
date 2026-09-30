@@ -164,6 +164,7 @@ export function ResourcePage({ cfg, openCreate, presetPatientId, onCreateHandled
           </DialogHeader>
           {(modal?.kind === "create" || modal?.kind === "edit") && (
             <DynamicForm
+              validate={cfg.validate}
               key={modal.kind === "edit" ? modal.row.id : "new"} fields={cfg.fields} liveSource={svc.source === "api"}
               initial={modal.kind === "edit" ? modal.row : modal.initial} serverErrors={serverErrors}
               submitLabel={modal.kind === "edit" ? "Save changes" : `Create ${cfg.singular.toLowerCase()}`}

@@ -13,10 +13,12 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as AppointmentsRouteImport } from './routes/appointments'
+import { Route as CartRouteImport } from './routes/cart'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as NewsRouteImport } from './routes/news'
+import { Route as PortalRouteImport } from './routes/portal'
 import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as AppModuleRouteImport } from './routes/app.$module'
 import { Route as AppAssistantRouteImport } from './routes/app.assistant'
@@ -32,6 +34,8 @@ import { Route as DoctorsIndexRouteImport } from './routes/doctors.index'
 import { Route as DoctorsIdRouteImport } from './routes/doctors.$id'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
 import { Route as ServicesIdRouteImport } from './routes/services.$id'
+import { Route as ShopIndexRouteImport } from './routes/shop.index'
+import { Route as ShopIdRouteImport } from './routes/shop.$id'
 import { Route as AppPatientsIndexRouteImport } from './routes/app.patients.index'
 import { Route as AppPatientsNewRouteImport } from './routes/app.patients.new'
 import { Route as AppPatientsIdIndexRouteImport } from './routes/app.patients.$id.index'
@@ -57,6 +61,11 @@ const AppointmentsRoute = AppointmentsRouteImport.update({
   path: '/appointments',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CartRoute = CartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -75,6 +84,11 @@ const GalleryRoute = GalleryRouteImport.update({
 const NewsRoute = NewsRouteImport.update({
   id: '/news',
   path: '/news',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalRoute = PortalRouteImport.update({
+  id: '/portal',
+  path: '/portal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TestimonialsRoute = TestimonialsRouteImport.update({
@@ -152,6 +166,16 @@ const ServicesIdRoute = ServicesIdRouteImport.update({
   path: '/services/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShopIndexRoute = ShopIndexRouteImport.update({
+  id: '/shop/',
+  path: '/shop/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShopIdRoute = ShopIdRouteImport.update({
+  id: '/shop/$id',
+  path: '/shop/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppPatientsIndexRoute = AppPatientsIndexRouteImport.update({
   id: '/patients/',
   path: '/patients/',
@@ -178,10 +202,12 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/app': typeof AppRouteWithChildren
   '/appointments': typeof AppointmentsRoute
+  '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
   '/news': typeof NewsRoute
+  '/portal': typeof PortalRoute
   '/testimonials': typeof TestimonialsRoute
   '/app/$module': typeof AppModuleRoute
   '/app/assistant': typeof AppAssistantRoute
@@ -194,9 +220,11 @@ export interface FileRoutesByFullPath {
   '/dev/integration-status': typeof DevIntegrationStatusRoute
   '/doctors/$id': typeof DoctorsIdRoute
   '/services/$id': typeof ServicesIdRoute
+  '/shop/$id': typeof ShopIdRoute
   '/blog/': typeof BlogIndexRoute
   '/doctors/': typeof DoctorsIndexRoute
   '/services/': typeof ServicesIndexRoute
+  '/shop/': typeof ShopIndexRoute
   '/app/patients/new': typeof AppPatientsNewRoute
   '/app/patients/': typeof AppPatientsIndexRoute
   '/app/patients/$id/edit': typeof AppPatientsIdEditRoute
@@ -207,10 +235,12 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/app': typeof AppRouteWithChildren
   '/appointments': typeof AppointmentsRoute
+  '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
   '/news': typeof NewsRoute
+  '/portal': typeof PortalRoute
   '/testimonials': typeof TestimonialsRoute
   '/app/$module': typeof AppModuleRoute
   '/app/assistant': typeof AppAssistantRoute
@@ -223,9 +253,11 @@ export interface FileRoutesByTo {
   '/dev/integration-status': typeof DevIntegrationStatusRoute
   '/doctors/$id': typeof DoctorsIdRoute
   '/services/$id': typeof ServicesIdRoute
+  '/shop/$id': typeof ShopIdRoute
   '/blog': typeof BlogIndexRoute
   '/doctors': typeof DoctorsIndexRoute
   '/services': typeof ServicesIndexRoute
+  '/shop': typeof ShopIndexRoute
   '/app/patients/new': typeof AppPatientsNewRoute
   '/app/patients': typeof AppPatientsIndexRoute
   '/app/patients/$id/edit': typeof AppPatientsIdEditRoute
@@ -237,10 +269,12 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/app': typeof AppRouteWithChildren
   '/appointments': typeof AppointmentsRoute
+  '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
   '/news': typeof NewsRoute
+  '/portal': typeof PortalRoute
   '/testimonials': typeof TestimonialsRoute
   '/app/$module': typeof AppModuleRoute
   '/app/assistant': typeof AppAssistantRoute
@@ -253,9 +287,11 @@ export interface FileRoutesById {
   '/dev/integration-status': typeof DevIntegrationStatusRoute
   '/doctors/$id': typeof DoctorsIdRoute
   '/services/$id': typeof ServicesIdRoute
+  '/shop/$id': typeof ShopIdRoute
   '/blog/': typeof BlogIndexRoute
   '/doctors/': typeof DoctorsIndexRoute
   '/services/': typeof ServicesIndexRoute
+  '/shop/': typeof ShopIndexRoute
   '/app/patients/new': typeof AppPatientsNewRoute
   '/app/patients/': typeof AppPatientsIndexRoute
   '/app/patients/$id/edit': typeof AppPatientsIdEditRoute
@@ -268,10 +304,12 @@ export interface FileRouteTypes {
     | '/about'
     | '/app'
     | '/appointments'
+    | '/cart'
     | '/contact'
     | '/events'
     | '/gallery'
     | '/news'
+    | '/portal'
     | '/testimonials'
     | '/app/$module'
     | '/app/assistant'
@@ -284,9 +322,11 @@ export interface FileRouteTypes {
     | '/dev/integration-status'
     | '/doctors/$id'
     | '/services/$id'
+    | '/shop/$id'
     | '/blog/'
     | '/doctors/'
     | '/services/'
+    | '/shop/'
     | '/app/patients/new'
     | '/app/patients/'
     | '/app/patients/$id/edit'
@@ -297,10 +337,12 @@ export interface FileRouteTypes {
     | '/about'
     | '/app'
     | '/appointments'
+    | '/cart'
     | '/contact'
     | '/events'
     | '/gallery'
     | '/news'
+    | '/portal'
     | '/testimonials'
     | '/app/$module'
     | '/app/assistant'
@@ -313,9 +355,11 @@ export interface FileRouteTypes {
     | '/dev/integration-status'
     | '/doctors/$id'
     | '/services/$id'
+    | '/shop/$id'
     | '/blog'
     | '/doctors'
     | '/services'
+    | '/shop'
     | '/app/patients/new'
     | '/app/patients'
     | '/app/patients/$id/edit'
@@ -326,10 +370,12 @@ export interface FileRouteTypes {
     | '/about'
     | '/app'
     | '/appointments'
+    | '/cart'
     | '/contact'
     | '/events'
     | '/gallery'
     | '/news'
+    | '/portal'
     | '/testimonials'
     | '/app/$module'
     | '/app/assistant'
@@ -342,9 +388,11 @@ export interface FileRouteTypes {
     | '/dev/integration-status'
     | '/doctors/$id'
     | '/services/$id'
+    | '/shop/$id'
     | '/blog/'
     | '/doctors/'
     | '/services/'
+    | '/shop/'
     | '/app/patients/new'
     | '/app/patients/'
     | '/app/patients/$id/edit'
@@ -356,10 +404,12 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AppRoute: typeof AppRouteWithChildren
   AppointmentsRoute: typeof AppointmentsRoute
+  CartRoute: typeof CartRoute
   ContactRoute: typeof ContactRoute
   EventsRoute: typeof EventsRoute
   GalleryRoute: typeof GalleryRoute
   NewsRoute: typeof NewsRoute
+  PortalRoute: typeof PortalRoute
   TestimonialsRoute: typeof TestimonialsRoute
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthLoginRoute: typeof AuthLoginRoute
@@ -367,9 +417,11 @@ export interface RootRouteChildren {
   DevIntegrationStatusRoute: typeof DevIntegrationStatusRoute
   DoctorsIdRoute: typeof DoctorsIdRoute
   ServicesIdRoute: typeof ServicesIdRoute
+  ShopIdRoute: typeof ShopIdRoute
   BlogIndexRoute: typeof BlogIndexRoute
   DoctorsIndexRoute: typeof DoctorsIndexRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
+  ShopIndexRoute: typeof ShopIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -402,6 +454,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppointmentsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cart': {
+      id: '/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -428,6 +487,13 @@ declare module '@tanstack/react-router' {
       path: '/news'
       fullPath: '/news'
       preLoaderRoute: typeof NewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal': {
+      id: '/portal'
+      path: '/portal'
+      fullPath: '/portal'
+      preLoaderRoute: typeof PortalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/testimonials': {
@@ -535,6 +601,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/shop/': {
+      id: '/shop/'
+      path: '/shop'
+      fullPath: '/shop/'
+      preLoaderRoute: typeof ShopIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shop/$id': {
+      id: '/shop/$id'
+      path: '/shop/$id'
+      fullPath: '/shop/$id'
+      preLoaderRoute: typeof ShopIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app/patients/': {
       id: '/app/patients/'
       path: '/patients'
@@ -597,10 +677,12 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AppRoute: AppRouteWithChildren,
   AppointmentsRoute: AppointmentsRoute,
+  CartRoute: CartRoute,
   ContactRoute: ContactRoute,
   EventsRoute: EventsRoute,
   GalleryRoute: GalleryRoute,
   NewsRoute: NewsRoute,
+  PortalRoute: PortalRoute,
   TestimonialsRoute: TestimonialsRoute,
   AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthLoginRoute: AuthLoginRoute,
@@ -608,9 +690,11 @@ const rootRouteChildren: RootRouteChildren = {
   DevIntegrationStatusRoute: DevIntegrationStatusRoute,
   DoctorsIdRoute: DoctorsIdRoute,
   ServicesIdRoute: ServicesIdRoute,
+  ShopIdRoute: ShopIdRoute,
   BlogIndexRoute: BlogIndexRoute,
   DoctorsIndexRoute: DoctorsIndexRoute,
   ServicesIndexRoute: ServicesIndexRoute,
+  ShopIndexRoute: ShopIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

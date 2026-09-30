@@ -54,7 +54,8 @@ const toInput = (f: FieldDef, v: unknown) => {
   return v;
 };
 
-export function DynamicForm({ fields, initial, submitLabel, onSubmit, onCancel, serverErrors, liveSource }: {
+export function DynamicForm({ fields, initial, submitLabel, onSubmit, onCancel, serverErrors, liveSource, validate }: {
+  validate?: ((v: Values) => Record<string, string>) | undefined;
   fields: FieldDef[]; initial?: Values | undefined; submitLabel: string; liveSource: boolean;
   onSubmit: (payload: Values) => Promise<void>; onCancel: () => void; serverErrors?: Record<string, string[]> | undefined;
 }) {
@@ -72,7 +73,7 @@ export function DynamicForm({ fields, initial, submitLabel, onSubmit, onCancel, 
   const sel = "h-9 w-full rounded-md border bg-background px-2 text-sm";
 
   return (
-    <form noValidate onSubmit={form.handleSubmit((v) => onSubmit(toPayload(fields, v)))} className="space-y-4">
+    <form noValidate onSubmit={form.handleSubmit((v) => { const errs = validate?.(v) ?? {}; const ks = Object.keys(errs); if (ks.length) { ks.forEach((k) => form.setError(k, { message: errs[k] ?? "Invalid" })); return; } return onSubmit(toPayload(fields, v)); })} className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
         {fields.filter((f) => !f.showIf || f.showIf(values)).map((f) => {
           const err = form.formState.errors[f.name]?.message as string | undefined;
