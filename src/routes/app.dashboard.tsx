@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import {
-  Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Line, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis,
+  Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from "recharts";
 import {
   Activity, ArrowUpRight, BadgeDollarSign, Bell, CalendarCheck, CalendarDays, CheckCircle2, ClipboardList, Cloud, FilePlus2,
@@ -125,7 +125,6 @@ function Dashboard() {
                 <YAxis tick={{ fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => v.toLocaleString()} />
                 <Tooltip formatter={(v: number) => ksh(v)} />
                 <Area type="monotone" dataKey="consultations" stroke="var(--chart-1)" strokeWidth={2} fill="url(#rv)" dot={{ r: 3 }} />
-                <Line type="monotone" dataKey="treatments" stroke="var(--chart-2)" strokeWidth={2} dot={{ r: 3 }} />
                 <Area type="monotone" dataKey="treatments" stroke="var(--chart-2)" strokeWidth={2} fill="none" dot={{ r: 3 }} />
                 <Area type="monotone" dataKey="shop" stroke="var(--chart-3)" strokeWidth={2} fill="none" dot={{ r: 3 }} />
               </AreaChart>
