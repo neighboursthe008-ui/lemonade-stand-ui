@@ -10,20 +10,68 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as AppRouteImport } from './routes/app'
+import { Route as AppointmentsRouteImport } from './routes/appointments'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as EventsRouteImport } from './routes/events'
+import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as NewsRouteImport } from './routes/news'
+import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth.forgot-password'
 import { Route as AuthLoginRouteImport } from './routes/auth.login'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as DevIntegrationStatusRouteImport } from './routes/dev.integration-status'
+import { Route as DoctorsIndexRouteImport } from './routes/doctors.index'
+import { Route as DoctorsIdRouteImport } from './routes/doctors.$id'
+import { Route as ServicesIndexRouteImport } from './routes/services.index'
+import { Route as ServicesIdRouteImport } from './routes/services.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppRoute = AppRouteImport.update({
   id: '/app',
   path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppointmentsRoute = AppointmentsRouteImport.update({
+  id: '/appointments',
+  path: '/appointments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsRoute = NewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TestimonialsRoute = TestimonialsRouteImport.update({
+  id: '/testimonials',
+  path: '/testimonials',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppDashboardRoute = AppDashboardRouteImport.update({
@@ -41,70 +89,191 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/auth/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DevIntegrationStatusRoute = DevIntegrationStatusRouteImport.update({
   id: '/dev/integration-status',
   path: '/dev/integration-status',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DoctorsIndexRoute = DoctorsIndexRouteImport.update({
+  id: '/doctors/',
+  path: '/doctors/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DoctorsIdRoute = DoctorsIdRouteImport.update({
+  id: '/doctors/$id',
+  path: '/doctors/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesIndexRoute = ServicesIndexRouteImport.update({
+  id: '/services/',
+  path: '/services/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesIdRoute = ServicesIdRouteImport.update({
+  id: '/services/$id',
+  path: '/services/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/app': typeof AppRouteWithChildren
+  '/appointments': typeof AppointmentsRoute
+  '/contact': typeof ContactRoute
+  '/events': typeof EventsRoute
+  '/gallery': typeof GalleryRoute
+  '/news': typeof NewsRoute
+  '/testimonials': typeof TestimonialsRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/dev/integration-status': typeof DevIntegrationStatusRoute
+  '/doctors/$id': typeof DoctorsIdRoute
+  '/services/$id': typeof ServicesIdRoute
+  '/blog/': typeof BlogIndexRoute
+  '/doctors/': typeof DoctorsIndexRoute
+  '/services/': typeof ServicesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/app': typeof AppRouteWithChildren
+  '/appointments': typeof AppointmentsRoute
+  '/contact': typeof ContactRoute
+  '/events': typeof EventsRoute
+  '/gallery': typeof GalleryRoute
+  '/news': typeof NewsRoute
+  '/testimonials': typeof TestimonialsRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/dev/integration-status': typeof DevIntegrationStatusRoute
+  '/doctors/$id': typeof DoctorsIdRoute
+  '/services/$id': typeof ServicesIdRoute
+  '/blog': typeof BlogIndexRoute
+  '/doctors': typeof DoctorsIndexRoute
+  '/services': typeof ServicesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/app': typeof AppRouteWithChildren
+  '/appointments': typeof AppointmentsRoute
+  '/contact': typeof ContactRoute
+  '/events': typeof EventsRoute
+  '/gallery': typeof GalleryRoute
+  '/news': typeof NewsRoute
+  '/testimonials': typeof TestimonialsRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/dev/integration-status': typeof DevIntegrationStatusRoute
+  '/doctors/$id': typeof DoctorsIdRoute
+  '/services/$id': typeof ServicesIdRoute
+  '/blog/': typeof BlogIndexRoute
+  '/doctors/': typeof DoctorsIndexRoute
+  '/services/': typeof ServicesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/app'
+    | '/appointments'
+    | '/contact'
+    | '/events'
+    | '/gallery'
+    | '/news'
+    | '/testimonials'
     | '/app/dashboard'
     | '/auth/forgot-password'
     | '/auth/login'
+    | '/blog/$slug'
     | '/dev/integration-status'
+    | '/doctors/$id'
+    | '/services/$id'
+    | '/blog/'
+    | '/doctors/'
+    | '/services/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/app'
+    | '/appointments'
+    | '/contact'
+    | '/events'
+    | '/gallery'
+    | '/news'
+    | '/testimonials'
     | '/app/dashboard'
     | '/auth/forgot-password'
     | '/auth/login'
+    | '/blog/$slug'
     | '/dev/integration-status'
+    | '/doctors/$id'
+    | '/services/$id'
+    | '/blog'
+    | '/doctors'
+    | '/services'
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/app'
+    | '/appointments'
+    | '/contact'
+    | '/events'
+    | '/gallery'
+    | '/news'
+    | '/testimonials'
     | '/app/dashboard'
     | '/auth/forgot-password'
     | '/auth/login'
+    | '/blog/$slug'
     | '/dev/integration-status'
+    | '/doctors/$id'
+    | '/services/$id'
+    | '/blog/'
+    | '/doctors/'
+    | '/services/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   AppRoute: typeof AppRouteWithChildren
+  AppointmentsRoute: typeof AppointmentsRoute
+  ContactRoute: typeof ContactRoute
+  EventsRoute: typeof EventsRoute
+  GalleryRoute: typeof GalleryRoute
+  NewsRoute: typeof NewsRoute
+  TestimonialsRoute: typeof TestimonialsRoute
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthLoginRoute: typeof AuthLoginRoute
+  BlogSlugRoute: typeof BlogSlugRoute
   DevIntegrationStatusRoute: typeof DevIntegrationStatusRoute
+  DoctorsIdRoute: typeof DoctorsIdRoute
+  ServicesIdRoute: typeof ServicesIdRoute
+  BlogIndexRoute: typeof BlogIndexRoute
+  DoctorsIndexRoute: typeof DoctorsIndexRoute
+  ServicesIndexRoute: typeof ServicesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,11 +285,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app': {
       id: '/app'
       path: '/app'
       fullPath: '/app'
       preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/appointments': {
+      id: '/appointments'
+      path: '/appointments'
+      fullPath: '/appointments'
+      preLoaderRoute: typeof AppointmentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/news': {
+      id: '/news'
+      path: '/news'
+      fullPath: '/news'
+      preLoaderRoute: typeof NewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/testimonials': {
+      id: '/testimonials'
+      path: '/testimonials'
+      fullPath: '/testimonials'
+      preLoaderRoute: typeof TestimonialsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/dashboard': {
@@ -144,11 +362,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dev/integration-status': {
       id: '/dev/integration-status'
       path: '/dev/integration-status'
       fullPath: '/dev/integration-status'
       preLoaderRoute: typeof DevIntegrationStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/doctors/': {
+      id: '/doctors/'
+      path: '/doctors'
+      fullPath: '/doctors/'
+      preLoaderRoute: typeof DoctorsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/doctors/$id': {
+      id: '/doctors/$id'
+      path: '/doctors/$id'
+      fullPath: '/doctors/$id'
+      preLoaderRoute: typeof DoctorsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/': {
+      id: '/services/'
+      path: '/services'
+      fullPath: '/services/'
+      preLoaderRoute: typeof ServicesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/$id': {
+      id: '/services/$id'
+      path: '/services/$id'
+      fullPath: '/services/$id'
+      preLoaderRoute: typeof ServicesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -166,10 +426,23 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   AppRoute: AppRouteWithChildren,
+  AppointmentsRoute: AppointmentsRoute,
+  ContactRoute: ContactRoute,
+  EventsRoute: EventsRoute,
+  GalleryRoute: GalleryRoute,
+  NewsRoute: NewsRoute,
+  TestimonialsRoute: TestimonialsRoute,
   AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthLoginRoute: AuthLoginRoute,
+  BlogSlugRoute: BlogSlugRoute,
   DevIntegrationStatusRoute: DevIntegrationStatusRoute,
+  DoctorsIdRoute: DoctorsIdRoute,
+  ServicesIdRoute: ServicesIdRoute,
+  BlogIndexRoute: BlogIndexRoute,
+  DoctorsIndexRoute: DoctorsIndexRoute,
+  ServicesIndexRoute: ServicesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
