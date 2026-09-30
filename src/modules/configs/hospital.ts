@@ -30,7 +30,7 @@ const flow = (steps: string[], danger?: string): ActionDef[] => {
 };
 const status = (label = "Status", opts: readonly string[]) => [{ key: "status", label, options: opts }];
 
-const P = "view_patients", C = "view_consultations", N = "view_patients", RX = "view_prescriptions", INV = "view_inventory", FIN = "view_payments", HR = "view_users", PROC = "view_inventory";
+const P = "view_patients", C = "view_consultations", N = "view_wards", RX = "view_pharmacy", INV = "view_inventory", FIN = "view_insurance", HR = "view_hr", PROC = "view_procurement";
 
 export const hospitalModules: ModuleConfig[] = [
   // ---------- Administration: departments + service catalogue ----------
@@ -168,7 +168,7 @@ export const hospitalModules: ModuleConfig[] = [
     seedCount: 10, seed: (i) => ({ ...patientAt(i + 80), weight_kg: 8 + i, height_cm: 70 + i * 4, head_cm: 44 + (i % 5), measured_on: day(-i * 10) }),
   }),
   mod({
-    key: "theatre", title: "Theatre", singular: "Procedure booking", section: "Departments", icon: Scissors, permission: C,
+    key: "theatre", title: "Theatre", singular: "Procedure booking", section: "Departments", icon: Scissors, permission: "view_theatre",
     description: "Procedure scheduling, pre-op checklist, surgery, recovery.",
     columns: [{ key: "patient_name", label: "Patient" }, { key: "procedure", label: "Procedure" }, { key: "room", label: "Room", hideOnMobile: true }, { key: "scheduled_at", label: "Scheduled", format: "datetime" }, { key: "status", label: "Status", format: "status" }],
     fields: [pat, t("procedure", "Procedure", true), sel("room", "Operating room", ["Theatre 1", "Theatre 2", "Minor theatre"]), { name: "scheduled_at", label: "Scheduled for", type: "datetime", required: true }, doc, t("anaesthetist", "Anaesthetist"), { name: "preop_checklist", label: "Pre-op checklist complete", type: "checkbox" }, note("notes", "Notes")],

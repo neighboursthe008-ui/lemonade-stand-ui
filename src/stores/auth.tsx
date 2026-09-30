@@ -20,8 +20,8 @@ interface AuthCtx {
 
 const Ctx = createContext<AuthCtx | null>(null);
 // sessionStorage: token survives reload but not a closed tab. Never store the Super Admin PIN.
-const TOKEN_KEY = "lemonade.token";
-const DEV_KEY = "lemonade.devProfile";
+const TOKEN_KEY = "munab.token";
+const DEV_KEY = "munab.devProfile";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<Status>("loading");

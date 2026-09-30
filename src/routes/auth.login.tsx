@@ -12,6 +12,7 @@ import { ApiError } from "@/api/client/http";
 import { DEV_PROFILES_ENABLED } from "@/config/env";
 import { devProfiles } from "@/mocks/auth/devProfiles";
 import { Logo } from "@/components/layout/Logo";
+import reception from "@/assets/munab-reception.jpg";
 
 export const Route = createFileRoute("/auth/login")({
   head: () => ({ meta: [
@@ -45,9 +46,16 @@ function LoginPage() {
 
   return (
     <div className="grid min-h-screen md:grid-cols-2">
-      <div className="aurora hidden flex-col justify-between p-10 text-brand-foreground md:flex">
-        <Logo inverted />
-        <p className="max-w-sm font-display text-2xl">One workspace for every chair, queue and invoice.</p>
+      <div className="relative hidden overflow-hidden md:flex">
+        <img src={reception} alt="Munab Nursing Home reception" width={1600} height={1000} className="absolute inset-0 h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-brand/95 via-brand/40 to-brand/15" />
+        <div className="relative flex w-full flex-col justify-between p-10 text-brand-foreground">
+          <Logo inverted />
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-widest text-brand-foreground/75">Hospital operations</p>
+            <p className="mt-2 max-w-md font-display text-3xl font-semibold">One secure workspace for every patient, ward and department.</p>
+          </div>
+        </div>
       </div>
       <div className="flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-sm">
