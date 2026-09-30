@@ -6,7 +6,7 @@ import {
 } from "recharts";
 import {
   Activity, ArrowUpRight, BadgeDollarSign, Bell, CalendarCheck, CalendarDays, CheckCircle2, ClipboardList, Cloud, FilePlus2,
-  Newspaper, Package, Phone, FlaskConical, Boxes, Receipt, Pill, Plus, ShoppingBag, SquarePen, Stethoscope, TriangleAlert, UserPlus, Users, Wallet, Clock, FileText,
+  Newspaper, Package, Phone, FlaskConical, Boxes, Receipt, Pill as PillIcon, Plus, ShoppingBag, SquarePen, Stethoscope, TriangleAlert, UserPlus, Users, Wallet, Clock, FileText,
 } from "lucide-react";
 import { MockDataBanner } from "@/components/states/MockDataBanner";
 import { overview, revenueByRange, extraKpis, lowStock, openInvoices, activityPerm, type Range } from "@/mocks/dashboard/overview";
@@ -76,7 +76,7 @@ function Dashboard() {
     waiting: { perm: "view_queue", icon: Clock, label: "Waiting Now", value: String(x.waitingNow), sub: dot("longest 18 min") },
     consult: { perm: "view_consultations", icon: Stethoscope, label: "In Consultation", value: String(x.inConsultation), sub: dot(`${o.clinical.completed} completed today`) },
     lab: { perm: "view_lab_orders", icon: FlaskConical, label: "Lab Results Pending", value: String(x.labPending), sub: dot("1 urgent") },
-    rx: { perm: "prescribe_medication", icon: Pill, label: "Prescriptions Today", value: String(x.rxToday), sub: dot("issued by you") },
+    rx: { perm: "prescribe_medication", icon: PillIcon, label: "Prescriptions Today", value: String(x.rxToday), sub: dot("issued by you") },
     newPts: { perm: "create_patients", icon: UserPlus, label: "New Registrations", value: String(x.newRegistrations), sub: dot("today") },
   } as const;
   type K = keyof typeof catalog;
@@ -95,7 +95,7 @@ function Dashboard() {
   const quick = [
     { icon: UserPlus, label: "Register Patient", perm: "create_patients" }, { icon: CalendarCheck, label: "Book Appointment", perm: "create_appointments" },
     { icon: FilePlus2, label: "Create Invoice", perm: "create_invoices" }, { icon: BadgeDollarSign, label: "Record Payment", perm: "create_payments" },
-    { icon: Pill, label: "Write Prescription", perm: "create_prescriptions" }, { icon: Package, label: "Add Product", perm: "view_inventory" },
+    { icon: PillIcon, label: "Write Prescription", perm: "create_prescriptions" }, { icon: Package, label: "Add Product", perm: "view_inventory" },
     { icon: Newspaper, label: "Create News", perm: "manage_marketing" }, { icon: SquarePen, label: "Create Blog Post", perm: "manage_marketing" },
     { icon: Cloud, label: "Create Campaign", perm: "manage_marketing" },
   ].filter((q) => can(q.perm)).map((q, i) => ({ ...q, primary: i === 0 }));
