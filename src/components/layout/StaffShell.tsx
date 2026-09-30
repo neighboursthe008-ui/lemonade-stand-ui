@@ -1,10 +1,13 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
-import { LogOut, Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Bell, ChevronDown, ChevronRight, CircleHelp, Home, LogOut, MapPin, Menu, Search, Settings, X } from "lucide-react";
 import { useAuth } from "@/stores/auth";
 import { staffNav } from "@/config/navigation";
 import { Logo } from "./Logo";
+
+function initials(name?: string) {
+  return (name ?? "?").split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase();
+}
 
 function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const { can, user } = useAuth();
@@ -12,26 +15,30 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
     .map((g) => ({ ...g, items: g.items.filter((i) => (i.superAdminOnly ? user?.is_super_admin : !i.permission || can(i.permission))) }))
     .filter((g) => g.items.length);
   return (
-    <nav aria-label="Main" className="flex-1 space-y-5 overflow-y-auto px-3 py-4">
+    <nav aria-label="Main" className="flex-1 overflow-y-auto px-3 pb-4">
       {groups.map((g) => (
-        <div key={g.label}>
-          <p className="mb-1.5 flex items-center gap-2 px-2 text-[11px] font-semibold uppercase tracking-wider text-sidebar-foreground/50">
-            <g.icon className="h-3.5 w-3.5" aria-hidden /> {g.label}
-          </p>
-          <ul className="space-y-0.5">
-            {g.items.map((i) => (
-              <li key={i.to}>
-                {i.ready ? (
-                  <Link to={i.to} onClick={onNavigate} className="block rounded-md px-2 py-1.5 text-sm text-sidebar-foreground/85 hover:bg-sidebar-accent" activeProps={{ className: "bg-sidebar-accent text-sidebar-primary font-medium" }}>
-                    {i.label}
-                  </Link>
-                ) : (
-                  <span aria-disabled className="flex items-center justify-between rounded-md px-2 py-1.5 text-sm text-sidebar-foreground/40" title="Arrives in a later build phase">
-                    {i.label}<span className="text-[10px] uppercase">soon</span>
-                  </span>
-                )}
-              </li>
-            ))}
+        <div key={g.label} className="border-b border-sidebar-border py-2 last:border-0">
+          <p className="px-2 pb-1 pt-1 text-[10px] font-semibold uppercase tracking-wider text-sidebar-foreground/60">{g.label}</p>
+          <ul>
+            {g.items.map((i) => {
+              const inner = (
+                <>
+                  <i.icon className="h-4 w-4 shrink-0" aria-hidden />
+                  <span className="flex-1 truncate">{i.label}</span>
+                  {i.badge ? <span className="grid h-4 min-w-4 place-items-center rounded-full bg-sidebar-primary px-1 text-[10px] font-bold text-sidebar-primary-foreground">{i.badge}</span> : null}
+                </>
+              );
+              return (
+                <li key={i.to}>
+                  {i.ready ? (
+                    <Link to={i.to} onClick={onNavigate} className="flex items-center gap-3 rounded-md px-2 py-[5px] text-[13px] text-sidebar-foreground hover:bg-sidebar-accent"
+                      activeProps={{ className: "!bg-sidebar-primary !text-sidebar-primary-foreground font-semibold" }}>{inner}</Link>
+                  ) : (
+                    <span aria-disabled title="Arrives in a later build phase" className="flex cursor-not-allowed items-center gap-3 rounded-md px-2 py-[5px] text-[13px] text-sidebar-foreground/80">{inner}</span>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </div>
       ))}
@@ -42,24 +49,35 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
 export function StaffShell({ children }: { children: ReactNode }) {
   const { user, logout, isDevSession, activeBranchId, setActiveBranchId } = useAuth();
   const [open, setOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
+  const path = useRouterState({ select: (s) => s.location.pathname });
+  const crumb = staffNav.flatMap((g) => g.items).find((i) => i.to === path)?.label ?? "Dashboard";
   const signOut = async () => { await logout(); navigate({ to: "/auth/login", replace: true }); };
 
   const side = (
     <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
-      <div className="flex h-16 items-center px-5"><Logo inverted /></div>
+      <div className="px-5 pb-2 pt-4">
+        <Logo inverted />
+        <p className="mt-0.5 pl-11 text-[11px] text-sidebar-foreground/70">Kerugoya, Kenya</p>
+      </div>
       <SidebarNav onNavigate={() => setOpen(false)} />
-      <div className="border-t border-sidebar-border p-4 text-sm">
-        <p className="truncate font-medium">{user?.name}</p>
-        <p className="truncate text-xs text-sidebar-foreground/60">{user?.roles.join(", ").replace(/_/g, " ")}</p>
-        {isDevSession && <p className="mt-1 text-[11px] text-sidebar-primary">Development profile — no Laravel session</p>}
+      <div className="flex items-center gap-3 border-t border-sidebar-border p-4">
+        <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-sidebar-primary text-xs font-bold text-sidebar-primary-foreground">{initials(user?.name)}</div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-semibold">{user?.name}</p>
+          <p className="truncate text-[11px] text-sidebar-foreground/70">{user?.email}</p>
+          {isDevSession && <p className="text-[10px] text-sidebar-primary">Development profile</p>}
+        </div>
+        <span title="Settings — later phase" aria-disabled className="text-sidebar-foreground/80"><Settings className="h-4 w-4" /></span>
+        <button onClick={signOut} aria-label="Sign out" className="text-sidebar-foreground/80 hover:text-sidebar-foreground"><LogOut className="h-4 w-4" /></button>
       </div>
     </div>
   );
 
   return (
     <div className="min-h-screen bg-background">
-      <aside className="fixed inset-y-0 left-0 hidden w-64 lg:block">{side}</aside>
+      {!collapsed && <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 lg:block">{side}</aside>}
       {open && (
         <div className="fixed inset-0 z-40 lg:hidden" role="dialog" aria-modal aria-label="Navigation">
           <button aria-label="Close menu" className="absolute inset-0 bg-foreground/40" onClick={() => setOpen(false)} />
@@ -68,21 +86,38 @@ export function StaffShell({ children }: { children: ReactNode }) {
           </div>
         </div>
       )}
-      <div className="lg:pl-64">
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b bg-background/90 px-4 backdrop-blur sm:px-6">
-          <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu" onClick={() => setOpen(true)}><Menu className="h-5 w-5" /></Button>
-          <div className="flex-1" />
-          {user && user.branches.length > 0 && (
-            <label className="flex items-center gap-2 text-sm">
-              <span className="hidden text-muted-foreground sm:inline">Branch</span>
-              <select className="max-w-[11rem] rounded-md border bg-card px-2 py-1.5 text-sm" value={activeBranchId ?? ""} onChange={(e) => setActiveBranchId(Number(e.target.value))}>
-                {user.branches.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
-              </select>
+      <div className={collapsed ? "" : "lg:pl-60"}>
+        <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b bg-card/95 px-4 backdrop-blur sm:px-5">
+          <button aria-label="Toggle menu" className="text-foreground/80" onClick={() => (window.innerWidth >= 1024 ? setCollapsed((c) => !c) : setOpen(true))}><Menu className="h-5 w-5" /></button>
+          <nav aria-label="Breadcrumb" className="hidden items-center gap-1.5 text-sm sm:flex">
+            <Home className="h-4 w-4 text-primary" /><ChevronRight className="h-3.5 w-3.5 text-muted-foreground" /><span>{crumb}</span>
+          </nav>
+          <div className="mx-auto hidden w-full max-w-md md:block">
+            <label className="flex items-center gap-2 rounded-full border bg-background px-4 py-1.5 text-sm text-muted-foreground">
+              <Search className="h-4 w-4" />
+              <input aria-label="Search" placeholder="Search patients, appointments, invoices, orders..." className="w-full bg-transparent outline-none placeholder:text-muted-foreground" />
             </label>
-          )}
-          <Button variant="outline" size="sm" onClick={signOut}><LogOut className="mr-1.5 h-4 w-4" />Sign out</Button>
+          </div>
+          <div className="ml-auto flex items-center gap-3">
+            <span className="relative" title="Notifications — later phase"><Bell className="h-5 w-5 text-primary" />
+              <span className="absolute -right-1.5 -top-1.5 grid h-4 w-4 place-items-center rounded-full bg-lemon text-[10px] font-bold text-lemon-foreground">3</span></span>
+            {user && user.branches.length > 0 && (
+              <label className="hidden items-center gap-1.5 rounded-md border px-2 py-1 text-sm sm:flex">
+                <MapPin className="h-4 w-4 text-primary" />
+                <select aria-label="Branch" className="max-w-[10rem] bg-transparent text-sm outline-none" value={activeBranchId ?? ""} onChange={(e) => setActiveBranchId(Number(e.target.value))}>
+                  {user.branches.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
+                </select>
+              </label>
+            )}
+            <CircleHelp className="hidden h-5 w-5 text-primary sm:block" aria-label="Help" />
+            <div className="flex items-center gap-2">
+              <div className="grid h-8 w-8 place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground">{initials(user?.name)}</div>
+              <span className="hidden text-sm font-medium lg:inline">{user?.name}</span>
+              <ChevronDown className="hidden h-4 w-4 lg:block" />
+            </div>
+          </div>
         </header>
-        <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:py-8">{children}</main>
+        <main className="px-4 py-5 sm:px-5">{children}</main>
       </div>
     </div>
   );
