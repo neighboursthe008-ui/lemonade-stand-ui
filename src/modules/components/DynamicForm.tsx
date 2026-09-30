@@ -55,14 +55,14 @@ const toInput = (f: FieldDef, v: unknown) => {
 };
 
 export function DynamicForm({ fields, initial, submitLabel, onSubmit, onCancel, serverErrors, liveSource }: {
-  fields: FieldDef[]; initial?: Values; submitLabel: string; liveSource: boolean;
+  fields: FieldDef[]; initial?: Values | undefined; submitLabel: string; liveSource: boolean;
   onSubmit: (payload: Values) => Promise<void>; onCancel: () => void; serverErrors?: Record<string, string[]> | undefined;
 }) {
   const { isDevSession } = useAuth();
   const defaults = useMemo(() => Object.fromEntries(fields.map((f) => [f.name, toInput(f, initial?.[f.name])])), [fields, initial]);
   const form = useForm<Values>({ resolver: zodResolver(buildSchema(fields)), defaultValues: defaults });
   const values = form.watch();
-  useEffect(() => { Object.entries(serverErrors ?? {}).forEach(([k, m]) => form.setError(k, { message: m[0] })); }, [serverErrors, form]);
+  useEffect(() => { Object.entries(serverErrors ?? {}).forEach(([k, m]) => form.setError(k, { message: m[0] ?? "Invalid value" })); }, [serverErrors, form]);
 
   const needsPatients = fields.some((f) => f.type === "patient");
   const patients = useQuery({

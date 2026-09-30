@@ -125,19 +125,19 @@ export const clinicalModules: ModuleConfig[] = [
     description: "Tooth conditions and procedures. Open a patient to use the full odontogram.", permission: "view_dental_chart", managePermission: "edit_dental_chart",
     columns: [
       { key: "patient_name|patient.full_name", label: "Patient" }, { key: "tooth_number", label: "Tooth" },
-      { key: "condition", label: "Condition", format: "status" }, { key: "procedure", label: "Procedure", hideOnMobile: true }, { key: "updated_at", label: "Updated", format: "date", hideOnMobile: true },
+      { key: "condition_type", label: "Condition", format: "status" }, { key: "procedure", label: "Procedure", hideOnMobile: true }, { key: "updated_at", label: "Updated", format: "date", hideOnMobile: true },
     ],
     fields: [
       { name: "patient_id", label: "Patient", type: "patient", required: true },
       { name: "tooth_number", label: "Tooth (FDI, e.g. 36)", type: "number", required: true, min: 11 },
-      { name: "condition", label: "Condition", type: "select", options: ["healthy", "caries", "filled", "missing", "crown", "root_canal", "fractured", "implant"], required: true },
+      { name: "condition_type", label: "Condition", type: "select", options: ["healthy", "caries", "filled", "missing", "crown", "root_canal", "fractured", "implant"], required: true },
       { name: "procedure", label: "Procedure", type: "text" }, { name: "notes", label: "Notes", type: "textarea", wide: true },
     ],
     canCreate: true, canEdit: true, canDelete: true,
     laravel: { list: endpoints.dentalChart.list, detail: endpoints.dentalChart.detail },
     backendNote: "Chart writes use the per-patient batch endpoint on the patient page.",
     seedCount: 60,
-    seed: (i) => ({ ...patientAt(i % 20), tooth_number: pick([11, 16, 21, 26, 36, 46, 47, 37, 14, 24], i), condition: pick(["caries", "filled", "missing", "crown", "root_canal"], i), procedure: pick(["Composite filling", "Extraction", "Crown fitted", "RCT", null], i), notes: null, updated_at: at(-(i % 90)) }),
+    seed: (i) => ({ ...patientAt(i % 20), tooth_number: pick([11, 16, 21, 26, 36, 46, 47, 37, 14, 24], i), condition_type: pick(["caries", "filled", "missing", "crown", "root_canal"], i), procedure: pick(["Composite filling", "Extraction", "Crown fitted", "RCT", null], i), notes: null, updated_at: at(-(i % 90)) }),
   },
   {
     key: "treatment-plans", title: "Treatment Plans", singular: "Treatment plan", section: "Clinical", icon: ClipboardList,

@@ -1,4 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { moduleByKey } from "@/modules/registry";
+import { getService, mockRows } from "@/modules/service";
+import { mockPatientList } from "@/mocks/patients/MockPatientRepository";
 import { useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import {
@@ -25,7 +30,6 @@ export const Route = createFileRoute("/app/dashboard")({
 });
 
 const ksh = (n: number) => `KSh ${n.toLocaleString("en-KE")}`;
-const mock = () => toast.info("Available once this module is connected to the clinic system.");
 
 function Card({ title, icon: Icon, right, children, className = "" }: { title: string; icon: typeof Users; right?: ReactNode; children: ReactNode; className?: string }) {
   return (
@@ -57,7 +61,23 @@ const Legend = ({ items }: { items: [string, string][] }) => (
 function greeting() { const h = new Date().getHours(); return h < 12 ? "Good Morning" : h < 17 ? "Good Afternoon" : "Good Evening"; }
 
 function Dashboard() {
-  const { user, can } = useAuth();
+  const { user, can, isDevSession } = useAuth();
+  const nav = useNavigate();
+  const qc = useQueryClient();
+  const queueCfg = moduleByKey("queue")!;
+  const callNext = useMutation({
+    mutationFn: () => getService(queueCfg, isDevSession).pageAction("callNext"),
+    onSuccess: async (r) => { await qc.invalidateQueries({ queryKey: ["module", "queue"] }); toast.success(r.message); },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Could not call next patient"),
+  });
+  // Live counts from the same development records the module pages use (consistent everywhere).
+  const today = new Date(Date.UTC(2026, 8, 30)).toISOString().slice(0, 10);
+  const appts = mockRows(moduleByKey("appointments")!);
+  const todays = appts.filter((a) => String(a["scheduled_at"]).slice(0, 10) === today);
+  const queueRows = mockRows(queueCfg);
+  const inv = mockRows(moduleByKey("invoices")!);
+  const stock = mockRows(moduleByKey("inventory")!);
+  const orders = mockRows(moduleByKey("orders")!);
   const [range, setRange] = useState<Range>("7d");
   const o = overview;
   const total = o.apptBreakdown.reduce((a, b) => a + b.value, 0);
@@ -66,14 +86,14 @@ function Dashboard() {
   const dot = (t: string) => <><span className="h-2.5 w-2.5 rounded-full bg-lemon" />{t}</>;
   const x = extraKpis;
   const catalog = {
-    patients: { perm: "view_patients", icon: Users, label: "Patients", value: o.kpis.patients.toLocaleString(), sub: up(o.kpis.patientsTrend, "this month") },
-    appts: { perm: "view_appointments", icon: CalendarDays, label: "Today's Appointments", value: String(o.kpis.appointments), sub: dot(`${o.kpis.pending} pending`) },
+    patients: { perm: "view_patients", icon: Users, label: "Patients", value: mockPatientList().length.toLocaleString(), sub: up(o.kpis.patientsTrend, "this month") },
+    appts: { perm: "view_appointments", icon: CalendarDays, label: "Today's Appointments", value: String(todays.length), sub: dot(`${todays.filter((a) => ["scheduled", "confirmed"].includes(String(a["status"]))).length} not yet checked in`) },
     revenue: { perm: ["view_accounting", "view_reports"], icon: Wallet, label: "Today's Revenue", value: ksh(o.kpis.revenue), sub: up(o.kpis.revenueTrend, "today") },
     collected: { perm: "view_payments", icon: BadgeDollarSign, label: "Collected Today", value: ksh(x.collectedToday), sub: dot("14 M-Pesa payments") },
-    invoices: { perm: "view_invoices", icon: Receipt, label: "Open Invoices", value: String(x.openInvoices), sub: dot("6 overdue") },
-    orders: { perm: "view_inventory", icon: ShoppingBag, label: "Pending Orders", value: String(o.kpis.orders), sub: dot(`${o.kpis.awaitingPayment} awaiting payment`) },
-    lowStock: { perm: "view_inventory", icon: Boxes, label: "Low Stock Items", value: String(x.lowStock), sub: dot("3 expiring in 30 days") },
-    waiting: { perm: "view_queue", icon: Clock, label: "Waiting Now", value: String(x.waitingNow), sub: dot("longest 18 min") },
+    invoices: { perm: "view_invoices", icon: Receipt, label: "Open Invoices", value: String(inv.filter((r) => ["sent", "partial", "overdue"].includes(String(r["status"]))).length), sub: dot("6 overdue") },
+    orders: { perm: "view_inventory", icon: ShoppingBag, label: "Pending Orders", value: String(orders.filter((r) => ["pending", "processing"].includes(String(r["status"]))).length), sub: dot(`${orders.filter((r) => r["payment_status"] === "awaiting_payment").length} awaiting payment`) },
+    lowStock: { perm: "view_inventory", icon: Boxes, label: "Low Stock Items", value: String(stock.filter((r) => Number(r["stock"]) <= Number(r["minimum_stock"])).length), sub: dot("3 expiring in 30 days") },
+    waiting: { perm: "view_queue", icon: Clock, label: "Waiting Now", value: String(queueRows.filter((r) => r["status"] === "waiting").length), sub: dot("longest 18 min") },
     consult: { perm: "view_consultations", icon: Stethoscope, label: "In Consultation", value: String(x.inConsultation), sub: dot(`${o.clinical.completed} completed today`) },
     lab: { perm: "view_lab_orders", icon: FlaskConical, label: "Lab Results Pending", value: String(x.labPending), sub: dot("1 urgent") },
     rx: { perm: "prescribe_medication", icon: PillIcon, label: "Prescriptions Today", value: String(x.rxToday), sub: dot("issued by you") },
@@ -93,12 +113,13 @@ function Dashboard() {
   const kpis = [...pref, ...(Object.keys(catalog) as K[])].filter((k, i, a) => a.indexOf(k) === i && allowed(k)).slice(0, 4).map((k) => catalog[k]);
 
   const quick = [
-    { icon: UserPlus, label: "Register Patient", perm: "create_patients" }, { icon: CalendarCheck, label: "Book Appointment", perm: "create_appointments" },
-    { icon: FilePlus2, label: "Create Invoice", perm: "create_invoices" }, { icon: BadgeDollarSign, label: "Record Payment", perm: "create_payments" },
-    { icon: PillIcon, label: "Write Prescription", perm: "create_prescriptions" }, { icon: Package, label: "Add Product", perm: "view_inventory" },
-    { icon: Newspaper, label: "Create News", perm: "manage_marketing" }, { icon: SquarePen, label: "Create Blog Post", perm: "manage_marketing" },
-    { icon: Cloud, label: "Create Campaign", perm: "manage_marketing" },
+    { icon: UserPlus, label: "Register Patient", perm: "create_patients", mod: "patients/new" }, { icon: CalendarCheck, label: "Book Appointment", perm: "create_appointments", mod: "appointments" },
+    { icon: FilePlus2, label: "Create Invoice", perm: "create_invoices", mod: "invoices" }, { icon: BadgeDollarSign, label: "Record Payment", perm: "create_payments", mod: "payments" },
+    { icon: PillIcon, label: "Write Prescription", perm: "create_prescriptions", mod: "prescriptions" }, { icon: Package, label: "Add Product", perm: "view_inventory", mod: "inventory" },
+    { icon: Newspaper, label: "Create News", perm: "manage_marketing", mod: "news" }, { icon: SquarePen, label: "Create Blog Post", perm: "manage_marketing", mod: "blog" },
+    { icon: Cloud, label: "Create Campaign", perm: "manage_marketing", mod: "campaigns" },
   ].filter((q) => can(q.perm)).map((q, i) => ({ ...q, primary: i === 0 }));
+  const openQuick = (mod: string) => (mod === "patients/new" ? nav({ to: "/app/patients/new" }) : nav({ to: "/app/$module", params: { module: mod }, search: { new: 1 } }));
 
   const show = {
     revenue: can(["view_accounting", "view_reports"]),
@@ -125,7 +146,10 @@ function Dashboard() {
         </div>
         <div className="flex flex-wrap items-center gap-3">
           {show.health && <span className="flex items-center gap-2 rounded-full border border-success/30 bg-success/10 px-3 py-1 text-xs text-primary"><span className="h-2.5 w-2.5 rounded-full bg-success" />All systems operational</span>}
-          {quick.length > 0 && <button onClick={mock} className="flex items-center gap-2 rounded-xl bg-lemon px-5 py-2.5 font-semibold text-lemon-foreground shadow-sm hover:brightness-95"><Plus className="h-5 w-5" />Quick Action</button>}
+          {quick.length > 0 && <DropdownMenu>
+            <DropdownMenuTrigger asChild><button className="flex items-center gap-2 rounded-xl bg-lemon px-5 py-2.5 font-semibold text-lemon-foreground shadow-sm hover:brightness-95"><Plus className="h-5 w-5" />Quick Action</button></DropdownMenuTrigger>
+            <DropdownMenuContent align="end">{quick.map((q) => <DropdownMenuItem key={q.label} onSelect={() => openQuick(q.mod)}><q.icon className="mr-2 h-4 w-4" />{q.label}</DropdownMenuItem>)}</DropdownMenuContent>
+          </DropdownMenu>}
         </div>
       </div>
 
@@ -204,7 +228,7 @@ function Dashboard() {
                     <td className="px-3 py-2.5 text-xs text-primary/80">{r.service}</td>
                     <td className="px-3 py-2.5 text-xs">{r.provider}</td>
                     <td className="px-3 py-2.5"><Pill s={r.status} /></td>
-                    <td className="px-3 py-2.5"><button onClick={mock} className="rounded-md border px-3 py-1 text-xs text-primary hover:bg-muted">View</button><span className="ml-3 text-muted-foreground">···</span></td>
+                    <td className="px-3 py-2.5"><Link to="/app/$module" params={{ module: "appointments" }} className="rounded-md border px-3 py-1 text-xs text-primary hover:bg-muted">View</Link></td>
                   </tr>
                 ))}
               </tbody>
@@ -228,7 +252,7 @@ function Dashboard() {
               </tbody>
             </table>
           </div>
-          <button onClick={mock} className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg bg-lemon py-2.5 text-sm font-semibold text-lemon-foreground hover:brightness-95"><Phone className="h-4 w-4" />Call Next Patient</button>
+          <button onClick={() => callNext.mutate()} disabled={callNext.isPending} className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg bg-lemon py-2.5 text-sm font-semibold text-lemon-foreground hover:brightness-95"><Phone className="h-4 w-4" />{callNext.isPending ? "Calling…" : "Call Next Patient"}</button>
         </Card>}
       </div>
 
@@ -252,7 +276,7 @@ function Dashboard() {
           {quick.length > 0 && <Card title="Quick Actions" icon={Activity}>
             <div className="grid grid-cols-4 gap-2">
               {quick.map((q) => (
-                <button key={q.label} onClick={mock} className={`flex flex-col items-center gap-1.5 rounded-lg border p-2 text-center text-[11px] leading-tight text-primary ${q.primary ? "border-lemon bg-lemon font-semibold text-lemon-foreground" : "hover:bg-muted"}`}>
+                <button key={q.label} onClick={() => openQuick(q.mod)} className={`flex flex-col items-center gap-1.5 rounded-lg border p-2 text-center text-[11px] leading-tight text-primary ${q.primary ? "border-lemon bg-lemon font-semibold text-lemon-foreground" : "hover:bg-muted"}`}>
                   <q.icon className="h-5 w-5" />{q.label}
                 </button>
               ))}
@@ -275,8 +299,8 @@ function Dashboard() {
               </ResponsiveContainer>
             </div>
             <div className="flex gap-2 sm:flex-col">
-              {can("view_accounting") && <button onClick={mock} className="rounded-md bg-lemon px-4 py-2 text-xs font-semibold text-lemon-foreground">View Accounting</button>}
-              <button onClick={mock} className="rounded-md border border-primary px-4 py-2 text-xs font-medium text-primary">View Reports</button>
+              {can("view_accounting") && <Link to="/app/$module" params={{ module: "journal-entries" }} className="rounded-md bg-lemon px-4 py-2 text-center text-xs font-semibold text-lemon-foreground">View Accounting</Link>}
+              <Link to="/app/reports" className="rounded-md border border-primary px-4 py-2 text-center text-xs font-medium text-primary">View Reports</Link>
             </div>
           </div>
         </Card>}
@@ -310,7 +334,7 @@ function Dashboard() {
                 <span className="h-2 w-2 rounded-full bg-success" /><span className="w-20 text-muted-foreground">Operational</span></li>
             ))}
           </ul>
-          <button onClick={mock} className="mt-3 w-full rounded-md border py-1.5 text-xs font-medium text-primary hover:bg-muted">View System Health</button></>}
+          <Link to="/app/$module" params={{ module: "system-health" }} className="mt-3 block w-full rounded-md border py-1.5 text-center text-xs font-medium text-primary hover:bg-muted">View System Health</Link></>}
           {show.health && <h3 className="mt-4 flex items-center gap-2 text-sm font-semibold text-primary"><Bell className="h-4 w-4" />Recent Activity</h3>}
           <ul className="mt-2 space-y-2 border-l-2 border-accent pl-3 text-[11px]">
             {activity.map((a) => (
@@ -321,7 +345,7 @@ function Dashboard() {
       </div>
 
       <footer className="flex flex-wrap items-center justify-end gap-6 border-t pt-3 text-xs text-primary">
-        <span>Help</span><span>Documentation</span><span>Privacy</span><span>Terms</span>
+        <Link to="/app/assistant" className="hover:underline">Help</Link><Link to="/dev/integration-status" className="hover:underline">Integration status</Link>
         <span className="text-muted-foreground">© {new Date().getFullYear()} Lemonade Dental Clinic</span>
       </footer>
     </div>

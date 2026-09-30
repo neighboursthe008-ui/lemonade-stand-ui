@@ -14,3 +14,16 @@
 - [ ] Phase 11 — marketing/SEO
 - [ ] Phase 12 — shop/orders (mock)
 - [ ] Phases 13–16 — tests, responsive QA, API QA, regression, reports (.md docs)
+
+## Full-frontend pass (in progress)
+- [x] Shared module engine (list/forms/details/actions, mock + Laravel services behind one interface)
+- [x] Permission-aware sidebar for every module (payroll excluded)
+- [x] Global search (Ctrl/⌘K), reports, staff AI assistant
+- [x] Dashboard: every button/quick action wired; counts from shared dev records
+- [x] Patient profile: Actions menu, 10 record tabs, FDI odontogram, certificate/referral letters
+- [ ] Public booking + contact via mock services
+- [ ] Patient portal screens
+- [ ] Public shop / cart / checkout
+- [ ] Journal entry debit/credit balance validation
+- [ ] Seven documentation reports
+- [ ] Full regression pass at all widths
