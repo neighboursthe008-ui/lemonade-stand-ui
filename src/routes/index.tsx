@@ -4,7 +4,7 @@ import { CalendarCheck, Stethoscope, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PublicShell } from "@/components/layout/PublicShell";
 import { ErrorState, EmptyState, LoadingState } from "@/components/states/States";
-import { publicService } from "@/api/public/public.service";
+import { publicKeys, publicService } from "@/api/public/public.service";
 import { shouldRetryRead } from "@/api/client/http";
 import { HeroCarousel } from "@/components/public/HeroCarousel";
 
@@ -23,8 +23,8 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const services = useQuery({ queryKey: ["public", "services"], queryFn: publicService.services, retry: shouldRetryRead });
-  const doctors = useQuery({ queryKey: ["public", "doctors"], queryFn: publicService.doctors, retry: shouldRetryRead });
+  const services = useQuery({ queryKey: publicKeys.services, queryFn: publicService.services, retry: shouldRetryRead });
+  const doctors = useQuery({ queryKey: publicKeys.doctors, queryFn: publicService.doctors, retry: shouldRetryRead });
 
   return (
     <PublicShell>
@@ -36,8 +36,8 @@ function Home() {
             <h1 className="text-4xl font-semibold leading-tight sm:text-5xl">Dental care that feels calm, clear and personal.</h1>
             <p className="mt-5 max-w-lg text-brand-foreground/80">Browse our services, meet the dentists and book a visit. No payment is needed to book — your consultation is handled at the clinic.</p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Button size="lg" className="bg-lemon text-lemon-foreground hover:bg-lemon/90" disabled title="Booking arrives in Phase 2"><CalendarCheck className="mr-2 h-4 w-4" />Book appointment (soon)</Button>
-              <Button asChild size="lg" variant="outline" className="border-brand-foreground/30 bg-transparent text-brand-foreground hover:bg-brand-foreground/10"><Link to="/auth/login">Staff sign in</Link></Button>
+              <Button asChild size="lg" className="bg-lemon text-lemon-foreground hover:bg-lemon/90"><Link to="/appointments"><CalendarCheck className="mr-2 h-4 w-4" />Book appointment</Link></Button>
+              <Button asChild size="lg" variant="outline" className="border-brand-foreground/30 bg-transparent text-brand-foreground hover:bg-brand-foreground/10"><Link to="/services">Explore services</Link></Button>
             </div>
           </div>
         </div>
@@ -49,7 +49,7 @@ function Home() {
           {services.isLoading ? <LoadingState label="Loading services…" /> : services.isError ? <ErrorState error={services.error} onRetry={() => services.refetch()} />
             : !services.data?.length ? <EmptyState title="No services published yet" />
             : <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{services.data.map((s) => (
-                <li key={s.id} className="rounded-lg border bg-card p-5"><h3 className="font-semibold">{s.name ?? s.title}</h3>{s.description && <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">{s.description}</p>}</li>
+                <li key={s.id} className="rounded-lg border bg-card p-5"><Link to="/services/$id" params={{ id: String(s.id) }} className="font-semibold hover:underline">{s.name}</Link></li>
               ))}</ul>}
         </div>
       </section>
@@ -61,7 +61,7 @@ function Home() {
             {doctors.isLoading ? <LoadingState label="Loading dentists…" /> : doctors.isError ? <ErrorState error={doctors.error} onRetry={() => doctors.refetch()} />
               : !doctors.data?.length ? <EmptyState title="No dentists listed yet" />
               : <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{doctors.data.map((d) => (
-                  <li key={d.id} className="rounded-lg border bg-card p-5"><h3 className="font-semibold">{d.name}</h3><p className="text-sm text-muted-foreground">{d.specialization ?? d.title ?? "Dentist"}</p></li>
+                  <li key={d.id} className="rounded-lg border bg-card p-5"><Link to="/doctors/$id" params={{ id: String(d.id) }} className="font-semibold hover:underline">{d.name}</Link><p className="text-sm text-muted-foreground">{d.specialty ?? "Dentist"}</p></li>
                 ))}</ul>}
           </div>
         </div>
