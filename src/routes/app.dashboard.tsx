@@ -143,7 +143,7 @@ function Dashboard() {
       </div>
 
       <div className="grid gap-4 xl:grid-cols-3">
-        <Card title="Revenue Overview" icon={CalendarDays} className="xl:col-span-2" right={
+        {show.revenue && <Card title="Revenue Overview" icon={CalendarDays} className={show.appts ? "xl:col-span-2" : "xl:col-span-3"} right={
           <div className="flex overflow-hidden rounded-md border text-xs">
             {([["7d", "7 Days"], ["30d", "30 Days"], ["3m", "3 Months"], ["12m", "12 Months"]] as const).map(([k, l]) => (
               <button key={k} onClick={() => setRange(k)} className={`px-3 py-1.5 ${range === k ? "bg-lemon font-semibold text-lemon-foreground" : "hover:bg-muted"}`}>{l}</button>
@@ -168,9 +168,9 @@ function Dashboard() {
               </AreaChart>
             </ResponsiveContainer>
           </div>
-        </Card>
+        </Card>}
 
-        <Card title="Today's Appointments" icon={CalendarDays}>
+        {show.appts && <Card title="Today's Appointments" icon={CalendarDays} className={show.revenue ? "" : "xl:col-span-3"}>
           <div className="flex flex-col items-center gap-4 sm:flex-row">
             <div className="relative h-44 w-44 shrink-0">
               <ResponsiveContainer width="100%" height="100%">
@@ -186,11 +186,11 @@ function Dashboard() {
               ))}
             </ul>
           </div>
-        </Card>
+        </Card>}
       </div>
 
       <div className="grid gap-4 xl:grid-cols-3">
-        <Card title="Today's Schedule" icon={CalendarDays} className="xl:col-span-2">
+        {show.appts && <Card title={isDentist ? "My Schedule" : "Today's Schedule"} icon={CalendarDays} className={show.queue ? "xl:col-span-2" : "xl:col-span-3"}>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[640px] text-sm">
               <thead className="bg-muted text-[10px] uppercase tracking-wide text-muted-foreground">
@@ -210,9 +210,9 @@ function Dashboard() {
               </tbody>
             </table>
           </div>
-        </Card>
+        </Card>}
 
-        <Card title="Waiting List" icon={Users}>
+        {show.queue && <Card title="Waiting List" icon={Users} className={show.appts ? "" : "xl:col-span-3"}>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead className="bg-muted text-[10px] uppercase tracking-wide text-muted-foreground">
@@ -229,12 +229,12 @@ function Dashboard() {
             </table>
           </div>
           <button onClick={mock} className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg bg-lemon py-2.5 text-sm font-semibold text-lemon-foreground hover:brightness-95"><Phone className="h-4 w-4" />Call Next Patient</button>
-        </Card>
+        </Card>}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-[1fr_1fr_1fr]">
+      <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
         <div className="space-y-4">
-          <Card title="Clinical Overview" icon={ClipboardList}>
+          {show.clinical && <Card title="Clinical Overview" icon={ClipboardList}>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {[
                 { icon: Users, label: "Waiting Patients", v: o.clinical.waiting, cls: "bg-accent text-primary" },
@@ -248,8 +248,8 @@ function Dashboard() {
                 </div>
               ))}
             </div>
-          </Card>
-          <Card title="Quick Actions" icon={Activity}>
+          </Card>}
+          {quick.length > 0 && <Card title="Quick Actions" icon={Activity}>
             <div className="grid grid-cols-4 gap-2">
               {quick.map((q) => (
                 <button key={q.label} onClick={mock} className={`flex flex-col items-center gap-1.5 rounded-lg border p-2 text-center text-[11px] leading-tight text-primary ${q.primary ? "border-lemon bg-lemon font-semibold text-lemon-foreground" : "hover:bg-muted"}`}>
@@ -257,10 +257,10 @@ function Dashboard() {
                 </button>
               ))}
             </div>
-          </Card>
+          </Card>}
         </div>
 
-        <Card title="Financial Snapshot" icon={BadgeDollarSign}>
+        {show.financial && <Card title="Financial Snapshot" icon={BadgeDollarSign}>
           <Legend items={[["Revenue", "var(--chart-1)"], ["Expenses", "var(--chart-2)"], ["Outstanding Invoices", "var(--chart-3)"], ["Payments", "var(--chart-4)"]]} />
           <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-center">
             <div className="h-48 flex-1">
@@ -279,23 +279,45 @@ function Dashboard() {
               <button onClick={mock} className="rounded-md border border-primary px-4 py-2 text-xs font-medium text-primary">View Reports</button>
             </div>
           </div>
-        </Card>
+        </Card>}
 
-        <Card title="System Health" icon={Activity} className="lg:col-span-2 xl:col-span-1">
-          <ul className="space-y-1.5 text-xs">
+        {show.invoices && <Card title="Open Invoices" icon={Receipt}>
+          <ul className="divide-y text-sm">
+            {openInvoices.map((i) => (
+              <li key={i.no} className="flex items-center justify-between gap-2 py-2">
+                <div><p className="font-medium text-primary">{i.patient}</p><p className="text-xs text-muted-foreground">{i.no}</p></div>
+                <div className="text-right"><p className="font-semibold">{ksh(i.amount)}</p><span className="rounded-full bg-lemon/40 px-2 text-[11px]">{i.status}</span></div>
+              </li>
+            ))}
+          </ul>
+        </Card>}
+
+        {show.inventory && <Card title="Low Stock" icon={Boxes}>
+          <ul className="space-y-3 text-sm">
+            {lowStock.map((l) => (
+              <li key={l.item}>
+                <div className="flex justify-between"><span className="text-primary">{l.item}</span><span className="text-xs text-muted-foreground">{l.onHand} / {l.reorder}</span></div>
+                <div className="mt-1 h-1.5 rounded-full bg-muted"><div className="h-full rounded-full bg-destructive" style={{ width: `${(l.onHand / l.reorder) * 100}%` }} /></div>
+              </li>
+            ))}
+          </ul>
+        </Card>}
+
+        {activity.length > 0 && <Card title={show.health ? "System Health" : "Recent Activity"} icon={Activity}>
+          {show.health && <><ul className="space-y-1.5 text-xs">
             {o.health.map((h) => (
               <li key={h} className="flex items-center gap-2"><FileText className="h-3.5 w-3.5 text-primary" /><span className="flex-1">{h}</span>
                 <span className="h-2 w-2 rounded-full bg-success" /><span className="w-20 text-muted-foreground">Operational</span></li>
             ))}
           </ul>
-          <button onClick={mock} className="mt-3 w-full rounded-md border py-1.5 text-xs font-medium text-primary hover:bg-muted">View System Health</button>
-          <h3 className="mt-4 flex items-center gap-2 text-sm font-semibold text-primary"><Bell className="h-4 w-4" />Recent Activity</h3>
+          <button onClick={mock} className="mt-3 w-full rounded-md border py-1.5 text-xs font-medium text-primary hover:bg-muted">View System Health</button></>}
+          {show.health && <h3 className="mt-4 flex items-center gap-2 text-sm font-semibold text-primary"><Bell className="h-4 w-4" />Recent Activity</h3>}
           <ul className="mt-2 space-y-2 border-l-2 border-accent pl-3 text-[11px]">
-            {o.activity.map((a) => (
+            {activity.map((a) => (
               <li key={a.text} className="flex justify-between gap-2"><span className="text-primary">{a.text}</span><span className="flex shrink-0 items-center gap-1 text-muted-foreground"><Clock className="h-3 w-3" />{a.at}</span></li>
             ))}
           </ul>
-        </Card>
+        </Card>}
       </div>
 
       <footer className="flex flex-wrap items-center justify-end gap-6 border-t pt-3 text-xs text-primary">
