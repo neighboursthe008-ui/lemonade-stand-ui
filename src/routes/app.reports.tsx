@@ -80,7 +80,7 @@ function Reports() {
           <section className="rounded-xl border bg-card p-4 shadow-sm lg:col-span-2">
             <h2 className="mb-2 font-display font-bold capitalize text-primary">{tab === "inventory" ? "Low stock items" : `${tab} breakdown`}</h2>
             <div className="h-72"><ResponsiveContainer width="100%" height="100%">
-              <BarChart data={q.data}><CartesianGrid vertical={false} stroke="var(--border)" /><XAxis dataKey="label" tick={{ fontSize: 11 }} /><YAxis tick={{ fontSize: 11 }} /><Tooltip /><Bar dataKey="value" fill="var(--chart-1)" radius={[4, 4, 0, 0]} /></BarChart>
+              <BarChart data={q.data ?? []}><CartesianGrid vertical={false} stroke="var(--border)" /><XAxis dataKey="label" tick={{ fontSize: 11 }} /><YAxis tick={{ fontSize: 11 }} /><Tooltip /><Bar dataKey="value" fill="var(--chart-1)" radius={[4, 4, 0, 0]} /></BarChart>
             </ResponsiveContainer></div>
           </section>
           <section className="rounded-xl border bg-card p-4 shadow-sm">
