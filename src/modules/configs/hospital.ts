@@ -3,7 +3,7 @@ import {
   Baby, Ruler, Scissors, ShieldPlus, FileCheck2, FileBadge, UserSquare2, Briefcase, CalendarCheck, CalendarOff, Wallet, FileQuestion, PackageCheck,
   ClipboardList, Gavel, MessageSquareText, MessagesSquare, Send, ListChecks, Share2, Microscope,
 } from "lucide-react";
-import type { FieldDef, ModuleConfig } from "../types";
+import type { ActionDef, FieldDef, ModuleConfig } from "../types";
 import { at, code, day, dentistAt, money, patientAt, pick } from "../seedKit";
 
 /**
@@ -23,8 +23,11 @@ const doc: FieldDef = { name: "clinician_id", label: "Clinician", type: "dentist
 
 type Base = Pick<ModuleConfig, "key" | "title" | "singular" | "section" | "icon" | "description" | "columns" | "fields" | "seed" | "seedCount"> & Partial<ModuleConfig>;
 const mod = (m: Base): ModuleConfig => ({ canCreate: true, canEdit: true, backendNote: PENDING, ...m });
-const flow = (steps: string[], danger?: string) => steps.slice(0, -1).map((s, i) => ({ key: `to-${steps[i + 1]}`, label: `Mark ${steps[i + 1]!.replace(/_/g, " ")}`, to: steps[i + 1], when: (r: Record<string, unknown>) => r["status"] === s }))
-  .concat(danger ? [{ key: "cancel", label: danger, to: "cancelled", danger: true, when: (r: Record<string, unknown>) => !["cancelled", steps[steps.length - 1]].includes(String(r["status"])) }] as never[] : []);
+const flow = (steps: string[], danger?: string): ActionDef[] => {
+  const out: ActionDef[] = steps.slice(1).map((next, i): ActionDef => ({ key: `to-${next}`, label: `Mark ${next.replace(/_/g, " ")}`, to: next, when: (r) => r["status"] === steps[i] }));
+  if (danger) out.push({ key: "cancel", label: danger, to: "cancelled", danger: true, when: (r) => !["cancelled", steps[steps.length - 1]].includes(String(r["status"])) });
+  return out;
+};
 const status = (label = "Status", opts: readonly string[]) => [{ key: "status", label, options: opts }];
 
 const P = "view_patients", C = "view_consultations", N = "view_patients", RX = "view_prescriptions", INV = "view_inventory", FIN = "view_payments", HR = "view_users", PROC = "view_inventory";
