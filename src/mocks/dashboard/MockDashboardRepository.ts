@@ -47,7 +47,7 @@ export const MockDashboardRepository: DashboardRepository = {
   source: "mock",
   async forRole(role) {
     return {
-      kpis: (byRole[role] ?? byRole.super_admin).kpis,
+      kpis: (byRole[role] ?? byRole["super_admin"])?.kpis ?? [],
       activity,
       appointmentsByDay: [
         { day: "Mon", count: 28 }, { day: "Tue", count: 34 }, { day: "Wed", count: 31 },

@@ -3,9 +3,9 @@ export type DataSource = "api" | "mock";
 
 const env = import.meta.env as Record<string, string | undefined>;
 
-export const API_BASE_URL = (env.VITE_API_BASE_URL ?? "http://127.0.0.1:8001").replace(/\/$/, "");
+export const API_BASE_URL = (env["VITE_API_BASE_URL"] ?? "http://127.0.0.1:8001").replace(/\/$/, "");
 
-const globalMode: DataSource = env.VITE_DATA_MODE === "api" ? "api" : "mock";
+const globalMode: DataSource = env["VITE_DATA_MODE"] === "api" ? "api" : "mock";
 
 /** Per-module override, e.g. VITE_PATIENTS_DATA_SOURCE=api */
 export function dataSourceFor(module: string, fallback: DataSource = globalMode): DataSource {
@@ -14,7 +14,7 @@ export function dataSourceFor(module: string, fallback: DataSource = globalMode)
 }
 
 /** Mock indicators are visible in dev, or in production only when explicitly enabled. */
-export const SHOW_MOCK_INDICATORS = import.meta.env.DEV || env.VITE_SHOW_MOCK_INDICATORS === "true";
+export const SHOW_MOCK_INDICATORS = import.meta.env.DEV || env["VITE_SHOW_MOCK_INDICATORS"] === "true";
 
 /** Development profiles let QA explore staff screens without the Laravel server. Disabled in prod unless opted in. */
-export const DEV_PROFILES_ENABLED = import.meta.env.DEV || env.VITE_ENABLE_DEV_PROFILES === "true";
+export const DEV_PROFILES_ENABLED = import.meta.env.DEV || env["VITE_ENABLE_DEV_PROFILES"] === "true";
