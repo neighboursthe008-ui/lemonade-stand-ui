@@ -18,6 +18,7 @@ import { Route as EventsRouteImport } from './routes/events'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as TestimonialsRouteImport } from './routes/testimonials'
+import { Route as AppModuleRouteImport } from './routes/app.$module'
 import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth.forgot-password'
 import { Route as AuthLoginRouteImport } from './routes/auth.login'
@@ -77,6 +78,11 @@ const TestimonialsRoute = TestimonialsRouteImport.update({
   id: '/testimonials',
   path: '/testimonials',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AppModuleRoute = AppModuleRouteImport.update({
+  id: '/$module',
+  path: '/$module',
+  getParentRoute: () => AppRoute,
 } as any)
 const AppDashboardRoute = AppDashboardRouteImport.update({
   id: '/dashboard',
@@ -159,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/gallery': typeof GalleryRoute
   '/news': typeof NewsRoute
   '/testimonials': typeof TestimonialsRoute
+  '/app/$module': typeof AppModuleRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
@@ -184,6 +191,7 @@ export interface FileRoutesByTo {
   '/gallery': typeof GalleryRoute
   '/news': typeof NewsRoute
   '/testimonials': typeof TestimonialsRoute
+  '/app/$module': typeof AppModuleRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
@@ -210,6 +218,7 @@ export interface FileRoutesById {
   '/gallery': typeof GalleryRoute
   '/news': typeof NewsRoute
   '/testimonials': typeof TestimonialsRoute
+  '/app/$module': typeof AppModuleRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
@@ -237,6 +246,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/news'
     | '/testimonials'
+    | '/app/$module'
     | '/app/dashboard'
     | '/auth/forgot-password'
     | '/auth/login'
@@ -262,6 +272,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/news'
     | '/testimonials'
+    | '/app/$module'
     | '/app/dashboard'
     | '/auth/forgot-password'
     | '/auth/login'
@@ -287,6 +298,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/news'
     | '/testimonials'
+    | '/app/$module'
     | '/app/dashboard'
     | '/auth/forgot-password'
     | '/auth/login'
@@ -388,6 +400,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/testimonials'
       preLoaderRoute: typeof TestimonialsRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/app/$module': {
+      id: '/app/$module'
+      path: '/$module'
+      fullPath: '/app/$module'
+      preLoaderRoute: typeof AppModuleRouteImport
+      parentRoute: typeof AppRoute
     }
     '/app/dashboard': {
       id: '/app/dashboard'
@@ -491,6 +510,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
+  AppModuleRoute: typeof AppModuleRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppPatientsNewRoute: typeof AppPatientsNewRoute
   AppPatientsIndexRoute: typeof AppPatientsIndexRoute
@@ -499,6 +519,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppModuleRoute: AppModuleRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppPatientsNewRoute: AppPatientsNewRoute,
   AppPatientsIndexRoute: AppPatientsIndexRoute,

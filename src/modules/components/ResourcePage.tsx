@@ -17,7 +17,7 @@ import { formatValue, getValue, humanize, statusClass } from "../format";
 import { DynamicForm } from "./DynamicForm";
 import type { ActionDef, ModuleConfig, Row } from "../types";
 
-type Modal = { kind: "create" } | { kind: "edit"; row: Row } | { kind: "view"; row: Row } | { kind: "action"; row: Row; action: ActionDef } | { kind: "delete"; row: Row } | null;
+type Modal = { kind: "create"; initial?: Record<string, unknown> | undefined } | { kind: "edit"; row: Row } | { kind: "view"; row: Row } | { kind: "action"; row: Row; action: ActionDef } | { kind: "delete"; row: Row } | null;
 
 function errText(e: unknown) {
   if (e instanceof ApiError) {
@@ -45,7 +45,7 @@ export function ResourcePage({ cfg, openCreate, presetPatientId, onCreateHandled
 
   useEffect(() => { setText(""); setSearch(""); setFilters({}); setPage(1); setModal(null); }, [cfg.key]);
   useEffect(() => { const t = setTimeout(() => { setSearch(text); setPage(1); }, 300); return () => clearTimeout(t); }, [text]);
-  useEffect(() => { if (openCreate && canManage && cfg.canCreate !== false && cfg.fields.length) { setModal({ kind: "create" }); onCreateHandled?.(); } }, [openCreate, canManage, cfg, onCreateHandled]);
+  useEffect(() => { if (openCreate && canManage && cfg.canCreate !== false && cfg.fields.length) { setModal({ kind: "create", initial: presetPatientId ? { patient_id: presetPatientId } : undefined }); onCreateHandled?.(); } }, [openCreate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const key = ["module", cfg.key, svc.source];
   const q = useQuery({
@@ -69,7 +69,6 @@ export function ResourcePage({ cfg, openCreate, presetPatientId, onCreateHandled
     if (a.fields?.length || a.confirm) return setModal({ kind: "action", row, action: a });
     act.mutate({ id: row.id, key: a.key, payload: {} });
   };
-  const initialCreate = presetPatientId ? { patient_id: presetPatientId } : undefined;
 
   return (
     <div className="space-y-4">
@@ -166,7 +165,7 @@ export function ResourcePage({ cfg, openCreate, presetPatientId, onCreateHandled
           {(modal?.kind === "create" || modal?.kind === "edit") && (
             <DynamicForm
               key={modal.kind === "edit" ? modal.row.id : "new"} fields={cfg.fields} liveSource={svc.source === "api"}
-              initial={modal.kind === "edit" ? modal.row : initialCreate} serverErrors={serverErrors}
+              initial={modal.kind === "edit" ? modal.row : modal.initial} serverErrors={serverErrors}
               submitLabel={modal.kind === "edit" ? "Save changes" : `Create ${cfg.singular.toLowerCase()}`}
               onCancel={() => setModal(null)}
               onSubmit={async (payload) => {
