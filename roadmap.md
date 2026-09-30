@@ -1,6 +1,7 @@
 # Lemonade frontend roadmap
 
 - [x] Phase 1 — architecture, API client + registry, capabilities, auth (+dev profiles), nav, states, staff shell, dashboard (mock), /dev/integration-status
+- [x] Hero carousel with uploaded clinic photos (45s interval)
 - [ ] Phase 2 — public website (services/doctors details, blog, events, campaigns, booking, assistant)
 - [ ] Phase 3 — patients
 - [ ] Phase 4 — appointments

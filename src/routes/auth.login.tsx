@@ -38,7 +38,7 @@ function LoginPage() {
       navigate({ to: "/app/dashboard" });
     } catch (e) {
       const err = e instanceof ApiError ? e : null;
-      if (err?.kind === "validation" && err.errors) Object.entries(err.errors).forEach(([k, m]) => form.setError(k as "email", { message: m[0] }));
+      if (err?.kind === "validation" && err.errors) Object.entries(err.errors).forEach(([k, m]) => form.setError(k as "email", { message: m[0] ?? "Invalid value" }));
       setServerError(err?.kind === "rate_limited" ? `Too many attempts. Wait ${err.retryAfter ?? 60} seconds and try again.` : err?.message ?? "Sign in failed");
     }
   });
@@ -79,7 +79,7 @@ function LoginPage() {
               <div className="mt-3 grid gap-2">
                 {devProfiles.map((p) => (
                   <Button key={p.id} variant="secondary" size="sm" className="justify-start" onClick={() => { loginAsDevProfile(p.id); navigate({ to: "/app/dashboard" }); }}>
-                    {p.name} · <span className="ml-1 text-muted-foreground">{p.roles[0].replace(/_/g, " ")}</span>
+                    {p.name} · <span className="ml-1 text-muted-foreground">{(p.roles[0] ?? "").replace(/_/g, " ")}</span>
                   </Button>
                 ))}
               </div>
