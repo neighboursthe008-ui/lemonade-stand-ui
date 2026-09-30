@@ -58,7 +58,7 @@ function PatientProfile() {
   return (
     <div className="space-y-4">
       {repo.source === "mock" && <MockDataBanner reason={isDevSession ? "Development profile — no clinic session" : "Patients set to mock data"} />}
-      <Link to="/app/patients" className="inline-flex items-center gap-1 text-sm text-primary hover:underline"><ArrowLeft className="h-4 w-4" />All patients</Link>
+      <Link to="/app/patients" className="flex w-fit items-center gap-1 text-sm text-primary hover:underline"><ArrowLeft className="h-4 w-4" />All patients</Link>
 
       <div className="flex flex-wrap items-center gap-4 rounded-xl border bg-card p-4 shadow-sm">
         <span className="grid h-14 w-14 place-items-center rounded-full bg-accent text-accent-foreground"><User className="h-7 w-7" /></span>

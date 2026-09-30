@@ -52,7 +52,7 @@ export function StaffShell({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const path = useRouterState({ select: (s) => s.location.pathname });
-  const crumb = staffNav.flatMap((g) => g.items).find((i) => i.to === path)?.label ?? "Dashboard";
+  const crumb = staffNav.flatMap((g) => g.items).find((i) => path === i.to || path.startsWith(i.to + "/"))?.label ?? "Dashboard";
   const signOut = async () => { await logout(); navigate({ to: "/auth/login", replace: true }); };
 
   const side = (
@@ -112,7 +112,7 @@ export function StaffShell({ children }: { children: ReactNode }) {
             <CircleHelp className="hidden h-5 w-5 text-primary sm:block" aria-label="Help" />
             <div className="flex items-center gap-2">
               <div className="grid h-8 w-8 place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground">{initials(user?.name)}</div>
-              <span className="hidden text-sm font-medium lg:inline">{user?.name}</span>
+              <span className="hidden max-w-[10rem] truncate whitespace-nowrap text-sm font-medium lg:inline">{user?.name}</span>
               <ChevronDown className="hidden h-4 w-4 lg:block" />
             </div>
           </div>

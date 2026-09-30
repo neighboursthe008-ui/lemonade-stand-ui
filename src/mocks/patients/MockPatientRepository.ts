@@ -42,7 +42,7 @@ function fromInput(id: number, number: string, x: PatientInput, prev?: Patient):
     referral_source: x.referral_source || null, notes: x.notes || null, allergies: x.allergies || null,
     medical_history: x.medical_history || null, current_medications: x.current_medications || null,
     blood_group: x.blood_group || null, has_insurance: !!x.has_insurance, branch_id: x.branch_id,
-    is_active: prev?.is_active ?? true, outstanding_balance: prev?.outstanding_balance ?? "0",
+    registered_at: prev?.registered_at ?? new Date().toISOString(), is_active: prev?.is_active ?? true, outstanding_balance: prev?.outstanding_balance ?? "0",
   };
 }
 
