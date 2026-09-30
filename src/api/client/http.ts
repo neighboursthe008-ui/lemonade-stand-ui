@@ -61,7 +61,7 @@ async function raw(path: string, { method = "GET", body, query, signal, timeoutM
         ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
-      body: body !== undefined ? JSON.stringify(body) : undefined,
+      body: body !== undefined ? JSON.stringify(body) : null,
     });
   } catch (e) {
     if (ctrl.signal.aborted && ctrl.signal.reason === "timeout") throw new ApiError("The server took too long to respond.", 0, "timeout");
