@@ -61,7 +61,7 @@ export const MockPatientRepository: PatientRepository = {
   },
   async get(id) {
     const p = store.find((x) => x.id === id);
-    if (!p) throw new ApiError("Patient not found", { status: 404, kind: "not_found" } as never);
+    if (!p) throw new ApiError("Patient not found", 404, "not_found");
     return delay(p);
   },
   async create(input) {
@@ -71,7 +71,7 @@ export const MockPatientRepository: PatientRepository = {
   },
   async update(id, input) {
     const prev = store.find((x) => x.id === id);
-    if (!prev) throw new ApiError("Patient not found", { status: 404, kind: "not_found" } as never);
+    if (!prev) throw new ApiError("Patient not found", 404, "not_found");
     const p = fromInput(id, prev.patient_number, input, prev);
     store = store.map((x) => (x.id === id ? p : x));
     return delay(p);
