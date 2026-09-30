@@ -36,8 +36,8 @@ export const overview = {
   ],
   clinical: { waiting: 8, inConsultation: 3, completed: 21, noShows: 2 },
   financial: ["Apr", "May", "Jun", "Jul", "Aug", "Sep"].map((m, i) => ({
-    month: m, revenue: [90, 110, 150, 160, 140, 170][i] * 1000, expenses: [60, 55, 80, 90, 70, 95][i] * 1000,
-    outstanding: [40, 30, 55, 45, 50, 60][i] * 1000, payments: [70, 85, 120, 130, 110, 140][i] * 1000,
+    month: m, revenue: [90, 110, 150, 160, 140, 170][i]! * 1000, expenses: [60, 55, 80, 90, 70, 95][i]! * 1000,
+    outstanding: [40, 30, 55, 45, 50, 60][i]! * 1000, payments: [70, 85, 120, 130, 110, 140][i]! * 1000,
   })),
   health: ["Database", "Redis", "Queue Worker", "Scheduler", "Storage", "API"],
   activity: [
