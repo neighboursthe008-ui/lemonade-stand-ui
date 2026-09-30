@@ -19,7 +19,10 @@ import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as AppModuleRouteImport } from './routes/app.$module'
+import { Route as AppAssistantRouteImport } from './routes/app.assistant'
 import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
+import { Route as AppReportsRouteImport } from './routes/app.reports'
+import { Route as AppSearchRouteImport } from './routes/app.search'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth.forgot-password'
 import { Route as AuthLoginRouteImport } from './routes/auth.login'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
@@ -84,9 +87,24 @@ const AppModuleRoute = AppModuleRouteImport.update({
   path: '/$module',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAssistantRoute = AppAssistantRouteImport.update({
+  id: '/assistant',
+  path: '/assistant',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppDashboardRoute = AppDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppReportsRoute = AppReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSearchRoute = AppSearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => AppRoute,
 } as any)
 const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
@@ -166,7 +184,10 @@ export interface FileRoutesByFullPath {
   '/news': typeof NewsRoute
   '/testimonials': typeof TestimonialsRoute
   '/app/$module': typeof AppModuleRoute
+  '/app/assistant': typeof AppAssistantRoute
   '/app/dashboard': typeof AppDashboardRoute
+  '/app/reports': typeof AppReportsRoute
+  '/app/search': typeof AppSearchRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -192,7 +213,10 @@ export interface FileRoutesByTo {
   '/news': typeof NewsRoute
   '/testimonials': typeof TestimonialsRoute
   '/app/$module': typeof AppModuleRoute
+  '/app/assistant': typeof AppAssistantRoute
   '/app/dashboard': typeof AppDashboardRoute
+  '/app/reports': typeof AppReportsRoute
+  '/app/search': typeof AppSearchRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -219,7 +243,10 @@ export interface FileRoutesById {
   '/news': typeof NewsRoute
   '/testimonials': typeof TestimonialsRoute
   '/app/$module': typeof AppModuleRoute
+  '/app/assistant': typeof AppAssistantRoute
   '/app/dashboard': typeof AppDashboardRoute
+  '/app/reports': typeof AppReportsRoute
+  '/app/search': typeof AppSearchRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -247,7 +274,10 @@ export interface FileRouteTypes {
     | '/news'
     | '/testimonials'
     | '/app/$module'
+    | '/app/assistant'
     | '/app/dashboard'
+    | '/app/reports'
+    | '/app/search'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/blog/$slug'
@@ -273,7 +303,10 @@ export interface FileRouteTypes {
     | '/news'
     | '/testimonials'
     | '/app/$module'
+    | '/app/assistant'
     | '/app/dashboard'
+    | '/app/reports'
+    | '/app/search'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/blog/$slug'
@@ -299,7 +332,10 @@ export interface FileRouteTypes {
     | '/news'
     | '/testimonials'
     | '/app/$module'
+    | '/app/assistant'
     | '/app/dashboard'
+    | '/app/reports'
+    | '/app/search'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/blog/$slug'
@@ -408,11 +444,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppModuleRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/assistant': {
+      id: '/app/assistant'
+      path: '/assistant'
+      fullPath: '/app/assistant'
+      preLoaderRoute: typeof AppAssistantRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/dashboard': {
       id: '/app/dashboard'
       path: '/dashboard'
       fullPath: '/app/dashboard'
       preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/reports': {
+      id: '/app/reports'
+      path: '/reports'
+      fullPath: '/app/reports'
+      preLoaderRoute: typeof AppReportsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/search': {
+      id: '/app/search'
+      path: '/search'
+      fullPath: '/app/search'
+      preLoaderRoute: typeof AppSearchRouteImport
       parentRoute: typeof AppRoute
     }
     '/auth/forgot-password': {
@@ -511,7 +568,10 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppModuleRoute: typeof AppModuleRoute
+  AppAssistantRoute: typeof AppAssistantRoute
   AppDashboardRoute: typeof AppDashboardRoute
+  AppReportsRoute: typeof AppReportsRoute
+  AppSearchRoute: typeof AppSearchRoute
   AppPatientsNewRoute: typeof AppPatientsNewRoute
   AppPatientsIndexRoute: typeof AppPatientsIndexRoute
   AppPatientsIdEditRoute: typeof AppPatientsIdEditRoute
@@ -520,7 +580,10 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppModuleRoute: AppModuleRoute,
+  AppAssistantRoute: AppAssistantRoute,
   AppDashboardRoute: AppDashboardRoute,
+  AppReportsRoute: AppReportsRoute,
+  AppSearchRoute: AppSearchRoute,
   AppPatientsNewRoute: AppPatientsNewRoute,
   AppPatientsIndexRoute: AppPatientsIndexRoute,
   AppPatientsIdEditRoute: AppPatientsIdEditRoute,
