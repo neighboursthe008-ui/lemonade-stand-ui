@@ -6,10 +6,10 @@ import {
 } from "recharts";
 import {
   Activity, ArrowUpRight, BadgeDollarSign, Bell, CalendarCheck, CalendarDays, CheckCircle2, ClipboardList, Cloud, FilePlus2,
-  Newspaper, Package, Phone, Plus, ShoppingBag, SquarePen, Stethoscope, TriangleAlert, UserPlus, Users, Wallet, Clock, FileText,
+  Newspaper, Package, Phone, FlaskConical, Boxes, Receipt, Pill as PillIcon, Plus, ShoppingBag, SquarePen, Stethoscope, TriangleAlert, UserPlus, Users, Wallet, Clock, FileText,
 } from "lucide-react";
 import { MockDataBanner } from "@/components/states/MockDataBanner";
-import { overview, revenueByRange, type Range } from "@/mocks/dashboard/overview";
+import { overview, revenueByRange, extraKpis, lowStock, openInvoices, activityPerm, type Range } from "@/mocks/dashboard/overview";
 import { useAuth } from "@/stores/auth";
 
 export const Route = createFileRoute("/app/dashboard")({
@@ -57,24 +57,62 @@ const Legend = ({ items }: { items: [string, string][] }) => (
 function greeting() { const h = new Date().getHours(); return h < 12 ? "Good Morning" : h < 17 ? "Good Afternoon" : "Good Evening"; }
 
 function Dashboard() {
-  const { user } = useAuth();
+  const { user, can } = useAuth();
   const [range, setRange] = useState<Range>("7d");
   const o = overview;
   const total = o.apptBreakdown.reduce((a, b) => a + b.value, 0);
 
-  const kpis = [
-    { icon: Users, label: "Patients", value: o.kpis.patients.toLocaleString(), sub: <><ArrowUpRight className="h-4 w-4 text-success" /><b className="text-success">{o.kpis.patientsTrend}</b> this month</> },
-    { icon: CalendarDays, label: "Today's Appointments", value: String(o.kpis.appointments), sub: <><span className="h-2.5 w-2.5 rounded-full bg-lemon" />{o.kpis.pending} pending</> },
-    { icon: Wallet, label: "Today's Revenue", value: ksh(o.kpis.revenue), sub: <><ArrowUpRight className="h-4 w-4 text-success" /><b className="text-success">{o.kpis.revenueTrend}</b> today</> },
-    { icon: ShoppingBag, label: "Pending Orders", value: String(o.kpis.orders), sub: <><span className="h-2.5 w-2.5 rounded-full bg-lemon" />{o.kpis.awaitingPayment} awaiting payment</> },
-  ];
+  const up = (t: string, w: string) => <><ArrowUpRight className="h-4 w-4 text-success" /><b className="text-success">{t}</b> {w}</>;
+  const dot = (t: string) => <><span className="h-2.5 w-2.5 rounded-full bg-lemon" />{t}</>;
+  const x = extraKpis;
+  const catalog = {
+    patients: { perm: "view_patients", icon: Users, label: "Patients", value: o.kpis.patients.toLocaleString(), sub: up(o.kpis.patientsTrend, "this month") },
+    appts: { perm: "view_appointments", icon: CalendarDays, label: "Today's Appointments", value: String(o.kpis.appointments), sub: dot(`${o.kpis.pending} pending`) },
+    revenue: { perm: ["view_accounting", "view_reports"], icon: Wallet, label: "Today's Revenue", value: ksh(o.kpis.revenue), sub: up(o.kpis.revenueTrend, "today") },
+    collected: { perm: "view_payments", icon: BadgeDollarSign, label: "Collected Today", value: ksh(x.collectedToday), sub: dot("14 M-Pesa payments") },
+    invoices: { perm: "view_invoices", icon: Receipt, label: "Open Invoices", value: String(x.openInvoices), sub: dot("6 overdue") },
+    orders: { perm: "view_inventory", icon: ShoppingBag, label: "Pending Orders", value: String(o.kpis.orders), sub: dot(`${o.kpis.awaitingPayment} awaiting payment`) },
+    lowStock: { perm: "view_inventory", icon: Boxes, label: "Low Stock Items", value: String(x.lowStock), sub: dot("3 expiring in 30 days") },
+    waiting: { perm: "view_queue", icon: Clock, label: "Waiting Now", value: String(x.waitingNow), sub: dot("longest 18 min") },
+    consult: { perm: "view_consultations", icon: Stethoscope, label: "In Consultation", value: String(x.inConsultation), sub: dot(`${o.clinical.completed} completed today`) },
+    lab: { perm: "view_lab_orders", icon: FlaskConical, label: "Lab Results Pending", value: String(x.labPending), sub: dot("1 urgent") },
+    rx: { perm: "prescribe_medication", icon: PillIcon, label: "Prescriptions Today", value: String(x.rxToday), sub: dot("issued by you") },
+    newPts: { perm: "create_patients", icon: UserPlus, label: "New Registrations", value: String(x.newRegistrations), sub: dot("today") },
+  } as const;
+  type K = keyof typeof catalog;
+  const order: Record<string, K[]> = {
+    super_admin: ["patients", "appts", "revenue", "orders"],
+    dentist: ["waiting", "consult", "lab", "rx"],
+    receptionist: ["appts", "waiting", "newPts", "patients"],
+    cashier: ["collected", "invoices", "patients", "revenue"],
+    inventory_manager: ["lowStock", "orders", "revenue", "patients"],
+  };
+  const role = user?.roles[0] ?? "";
+  const pref = order[role] ?? (Object.keys(catalog) as K[]);
+  const allowed = (k: K) => can(catalog[k].perm as string | string[]);
+  const kpis = [...pref, ...(Object.keys(catalog) as K[])].filter((k, i, a) => a.indexOf(k) === i && allowed(k)).slice(0, 4).map((k) => catalog[k]);
 
   const quick = [
-    { icon: UserPlus, label: "Register Patient", primary: true }, { icon: CalendarCheck, label: "Book Appointment" },
-    { icon: FilePlus2, label: "Create Invoice" }, { icon: BadgeDollarSign, label: "Record Payment" },
-    { icon: Package, label: "Add Product" }, { icon: Newspaper, label: "Create News" },
-    { icon: SquarePen, label: "Create Blog Post" }, { icon: Cloud, label: "Create Campaign" },
-  ];
+    { icon: UserPlus, label: "Register Patient", perm: "create_patients" }, { icon: CalendarCheck, label: "Book Appointment", perm: "create_appointments" },
+    { icon: FilePlus2, label: "Create Invoice", perm: "create_invoices" }, { icon: BadgeDollarSign, label: "Record Payment", perm: "create_payments" },
+    { icon: PillIcon, label: "Write Prescription", perm: "create_prescriptions" }, { icon: Package, label: "Add Product", perm: "view_inventory" },
+    { icon: Newspaper, label: "Create News", perm: "manage_marketing" }, { icon: SquarePen, label: "Create Blog Post", perm: "manage_marketing" },
+    { icon: Cloud, label: "Create Campaign", perm: "manage_marketing" },
+  ].filter((q) => can(q.perm)).map((q, i) => ({ ...q, primary: i === 0 }));
+
+  const show = {
+    revenue: can(["view_accounting", "view_reports"]),
+    appts: can("view_appointments"),
+    queue: can("view_queue"),
+    clinical: can("view_consultations"),
+    financial: can(["view_invoices", "view_accounting"]),
+    invoices: can("view_invoices") && !can("view_accounting"),
+    inventory: can("view_inventory"),
+    health: !!user?.is_super_admin,
+  };
+  const activity = o.activity.filter((a) => user?.is_super_admin || can(activityPerm[a.text] ?? "__none"));
+  const isDentist = role === "dentist";
+  const roleLabel = role.replace(/_/g, " ");
 
   return (
     <div className="space-y-4">
@@ -83,15 +121,15 @@ function Dashboard() {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="font-display text-2xl font-bold text-primary sm:text-3xl">{greeting()}, {user?.name}</h1>
-          <p className="text-primary/80">Here's what's happening at Lemonade Dental Clinic today.</p>
+          <p className="text-primary/80">Here's what's happening at Lemonade Dental Clinic today. <span className="ml-1 rounded-full bg-accent px-2 py-0.5 text-xs capitalize text-accent-foreground">{roleLabel} view</span></p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <span className="flex items-center gap-2 rounded-full border border-success/30 bg-success/10 px-3 py-1 text-xs text-primary"><span className="h-2.5 w-2.5 rounded-full bg-success" />All systems operational</span>
-          <button onClick={mock} className="flex items-center gap-2 rounded-xl bg-lemon px-5 py-2.5 font-semibold text-lemon-foreground shadow-sm hover:brightness-95"><Plus className="h-5 w-5" />Quick Action</button>
+          {show.health && <span className="flex items-center gap-2 rounded-full border border-success/30 bg-success/10 px-3 py-1 text-xs text-primary"><span className="h-2.5 w-2.5 rounded-full bg-success" />All systems operational</span>}
+          {quick.length > 0 && <button onClick={mock} className="flex items-center gap-2 rounded-xl bg-lemon px-5 py-2.5 font-semibold text-lemon-foreground shadow-sm hover:brightness-95"><Plus className="h-5 w-5" />Quick Action</button>}
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className={`grid gap-4 sm:grid-cols-2 ${["xl:grid-cols-1", "xl:grid-cols-1", "xl:grid-cols-2", "xl:grid-cols-3", "xl:grid-cols-4"][kpis.length]}`}>
         {kpis.map((k) => (
           <div key={k.label} className="flex items-center gap-4 rounded-xl border bg-card p-4 shadow-sm">
             <span className="grid h-14 w-14 shrink-0 place-items-center rounded-xl bg-accent text-primary"><k.icon className="h-7 w-7" /></span>
@@ -105,7 +143,7 @@ function Dashboard() {
       </div>
 
       <div className="grid gap-4 xl:grid-cols-3">
-        <Card title="Revenue Overview" icon={CalendarDays} className="xl:col-span-2" right={
+        {show.revenue && <Card title="Revenue Overview" icon={CalendarDays} className={show.appts ? "xl:col-span-2" : "xl:col-span-3"} right={
           <div className="flex overflow-hidden rounded-md border text-xs">
             {([["7d", "7 Days"], ["30d", "30 Days"], ["3m", "3 Months"], ["12m", "12 Months"]] as const).map(([k, l]) => (
               <button key={k} onClick={() => setRange(k)} className={`px-3 py-1.5 ${range === k ? "bg-lemon font-semibold text-lemon-foreground" : "hover:bg-muted"}`}>{l}</button>
@@ -130,9 +168,9 @@ function Dashboard() {
               </AreaChart>
             </ResponsiveContainer>
           </div>
-        </Card>
+        </Card>}
 
-        <Card title="Today's Appointments" icon={CalendarDays}>
+        {show.appts && <Card title="Today's Appointments" icon={CalendarDays} className={show.revenue ? "" : "xl:col-span-3"}>
           <div className="flex flex-col items-center gap-4 sm:flex-row">
             <div className="relative h-44 w-44 shrink-0">
               <ResponsiveContainer width="100%" height="100%">
@@ -148,11 +186,11 @@ function Dashboard() {
               ))}
             </ul>
           </div>
-        </Card>
+        </Card>}
       </div>
 
       <div className="grid gap-4 xl:grid-cols-3">
-        <Card title="Today's Schedule" icon={CalendarDays} className="xl:col-span-2">
+        {show.appts && <Card title={isDentist ? "My Schedule" : "Today's Schedule"} icon={CalendarDays} className={show.queue ? "xl:col-span-2" : "xl:col-span-3"}>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[640px] text-sm">
               <thead className="bg-muted text-[10px] uppercase tracking-wide text-muted-foreground">
@@ -172,9 +210,9 @@ function Dashboard() {
               </tbody>
             </table>
           </div>
-        </Card>
+        </Card>}
 
-        <Card title="Waiting List" icon={Users}>
+        {show.queue && <Card title="Waiting List" icon={Users} className={show.appts ? "" : "xl:col-span-3"}>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead className="bg-muted text-[10px] uppercase tracking-wide text-muted-foreground">
@@ -191,12 +229,12 @@ function Dashboard() {
             </table>
           </div>
           <button onClick={mock} className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg bg-lemon py-2.5 text-sm font-semibold text-lemon-foreground hover:brightness-95"><Phone className="h-4 w-4" />Call Next Patient</button>
-        </Card>
+        </Card>}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-[1fr_1fr_1fr]">
+      <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
         <div className="space-y-4">
-          <Card title="Clinical Overview" icon={ClipboardList}>
+          {show.clinical && <Card title="Clinical Overview" icon={ClipboardList}>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {[
                 { icon: Users, label: "Waiting Patients", v: o.clinical.waiting, cls: "bg-accent text-primary" },
@@ -210,8 +248,8 @@ function Dashboard() {
                 </div>
               ))}
             </div>
-          </Card>
-          <Card title="Quick Actions" icon={Activity}>
+          </Card>}
+          {quick.length > 0 && <Card title="Quick Actions" icon={Activity}>
             <div className="grid grid-cols-4 gap-2">
               {quick.map((q) => (
                 <button key={q.label} onClick={mock} className={`flex flex-col items-center gap-1.5 rounded-lg border p-2 text-center text-[11px] leading-tight text-primary ${q.primary ? "border-lemon bg-lemon font-semibold text-lemon-foreground" : "hover:bg-muted"}`}>
@@ -219,10 +257,10 @@ function Dashboard() {
                 </button>
               ))}
             </div>
-          </Card>
+          </Card>}
         </div>
 
-        <Card title="Financial Snapshot" icon={BadgeDollarSign}>
+        {show.financial && <Card title="Financial Snapshot" icon={BadgeDollarSign}>
           <Legend items={[["Revenue", "var(--chart-1)"], ["Expenses", "var(--chart-2)"], ["Outstanding Invoices", "var(--chart-3)"], ["Payments", "var(--chart-4)"]]} />
           <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-center">
             <div className="h-48 flex-1">
@@ -237,27 +275,49 @@ function Dashboard() {
               </ResponsiveContainer>
             </div>
             <div className="flex gap-2 sm:flex-col">
-              <button onClick={mock} className="rounded-md bg-lemon px-4 py-2 text-xs font-semibold text-lemon-foreground">View Accounting</button>
+              {can("view_accounting") && <button onClick={mock} className="rounded-md bg-lemon px-4 py-2 text-xs font-semibold text-lemon-foreground">View Accounting</button>}
               <button onClick={mock} className="rounded-md border border-primary px-4 py-2 text-xs font-medium text-primary">View Reports</button>
             </div>
           </div>
-        </Card>
+        </Card>}
 
-        <Card title="System Health" icon={Activity} className="lg:col-span-2 xl:col-span-1">
-          <ul className="space-y-1.5 text-xs">
+        {show.invoices && <Card title="Open Invoices" icon={Receipt}>
+          <ul className="divide-y text-sm">
+            {openInvoices.map((i) => (
+              <li key={i.no} className="flex items-center justify-between gap-2 py-2">
+                <div><p className="font-medium text-primary">{i.patient}</p><p className="text-xs text-muted-foreground">{i.no}</p></div>
+                <div className="text-right"><p className="font-semibold">{ksh(i.amount)}</p><span className="rounded-full bg-lemon/40 px-2 text-[11px]">{i.status}</span></div>
+              </li>
+            ))}
+          </ul>
+        </Card>}
+
+        {show.inventory && <Card title="Low Stock" icon={Boxes}>
+          <ul className="space-y-3 text-sm">
+            {lowStock.map((l) => (
+              <li key={l.item}>
+                <div className="flex justify-between"><span className="text-primary">{l.item}</span><span className="text-xs text-muted-foreground">{l.onHand} / {l.reorder}</span></div>
+                <div className="mt-1 h-1.5 rounded-full bg-muted"><div className="h-full rounded-full bg-destructive" style={{ width: `${(l.onHand / l.reorder) * 100}%` }} /></div>
+              </li>
+            ))}
+          </ul>
+        </Card>}
+
+        {activity.length > 0 && <Card title={show.health ? "System Health" : "Recent Activity"} icon={Activity}>
+          {show.health && <><ul className="space-y-1.5 text-xs">
             {o.health.map((h) => (
               <li key={h} className="flex items-center gap-2"><FileText className="h-3.5 w-3.5 text-primary" /><span className="flex-1">{h}</span>
                 <span className="h-2 w-2 rounded-full bg-success" /><span className="w-20 text-muted-foreground">Operational</span></li>
             ))}
           </ul>
-          <button onClick={mock} className="mt-3 w-full rounded-md border py-1.5 text-xs font-medium text-primary hover:bg-muted">View System Health</button>
-          <h3 className="mt-4 flex items-center gap-2 text-sm font-semibold text-primary"><Bell className="h-4 w-4" />Recent Activity</h3>
+          <button onClick={mock} className="mt-3 w-full rounded-md border py-1.5 text-xs font-medium text-primary hover:bg-muted">View System Health</button></>}
+          {show.health && <h3 className="mt-4 flex items-center gap-2 text-sm font-semibold text-primary"><Bell className="h-4 w-4" />Recent Activity</h3>}
           <ul className="mt-2 space-y-2 border-l-2 border-accent pl-3 text-[11px]">
-            {o.activity.map((a) => (
+            {activity.map((a) => (
               <li key={a.text} className="flex justify-between gap-2"><span className="text-primary">{a.text}</span><span className="flex shrink-0 items-center gap-1 text-muted-foreground"><Clock className="h-3 w-3" />{a.at}</span></li>
             ))}
           </ul>
-        </Card>
+        </Card>}
       </div>
 
       <footer className="flex flex-wrap items-center justify-end gap-6 border-t pt-3 text-xs text-primary">
