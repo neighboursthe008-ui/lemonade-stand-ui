@@ -9,7 +9,7 @@ import { shouldRetryRead } from "@/api/client/http";
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/doctors/$id")({
-  head: () => seo("Dentist profile", "Profile of a Munab Nursing Home dentist and how to book with them."),
+  head: () => seo("Clinician profile", "Profile of a Munab Nursing Home doctor or specialist and how to book with them."),
   component: DoctorDetail,
 });
 
@@ -20,12 +20,12 @@ function DoctorDetail() {
   return (
     <PublicShell>
       {q.isLoading ? <Container><LoadingState /></Container> : q.isError ? <Container><ErrorState error={q.error} onRetry={() => q.refetch()} /></Container>
-        : !d ? <Container><NotFoundState what="dentist" /></Container> : (
+        : !d ? <Container><NotFoundState what="clinician" /></Container> : (
           <>
             <PageHeader eyebrow={d.specialty ?? "Dentist"} title={d.name} />
             <Container className="flex flex-wrap gap-3">
               <Button asChild className="bg-lemon text-lemon-foreground hover:bg-lemon/90"><Link to="/appointments" search={{ doctor: d.id }}>Book with {d.name}</Link></Button>
-              <Button asChild variant="outline"><Link to="/doctors">All dentists</Link></Button>
+              <Button asChild variant="outline"><Link to="/doctors">All doctors & specialists</Link></Button>
             </Container>
           </>
         )}

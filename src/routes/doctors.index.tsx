@@ -18,10 +18,10 @@ function Doctors() {
   const q = useQuery({ queryKey: publicKeys.doctors, queryFn: publicService.doctors, retry: shouldRetryRead });
   return (
     <PublicShell>
-      <PageHeader eyebrow="Our team" title="Meet your dentists." />
+      <PageHeader eyebrow="Our team" title="Doctors & specialists." />
       <Container>
-        {q.isLoading ? <LoadingState label="Loading dentists…" /> : q.isError ? <ErrorState error={q.error} onRetry={() => q.refetch()} />
-          : !q.data?.length ? <EmptyState title="No dentists listed yet" />
+        {q.isLoading ? <LoadingState label="Loading clinicians…" /> : q.isError ? <ErrorState error={q.error} onRetry={() => q.refetch()} />
+          : !q.data?.length ? <EmptyState title="No clinicians listed yet" />
           : <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{q.data.map((d) => (
               <li key={d.id}>
                 <Link to="/doctors/$id" params={{ id: String(d.id) }} className="flex items-center gap-4 rounded-lg border bg-card p-5 hover:border-aqua">
