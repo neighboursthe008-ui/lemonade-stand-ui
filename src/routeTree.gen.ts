@@ -20,6 +20,7 @@ import { Route as EventsRouteImport } from './routes/events'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as PortalRouteImport } from './routes/portal'
+import { Route as SpecialtiesRouteImport } from './routes/specialties'
 import { Route as TendersRouteImport } from './routes/tenders'
 import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as AppModuleRouteImport } from './routes/app.$module'
@@ -96,6 +97,11 @@ const NewsRoute = NewsRouteImport.update({
 const PortalRoute = PortalRouteImport.update({
   id: '/portal',
   path: '/portal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SpecialtiesRoute = SpecialtiesRouteImport.update({
+  id: '/specialties',
+  path: '/specialties',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TendersRoute = TendersRouteImport.update({
@@ -221,6 +227,7 @@ export interface FileRoutesByFullPath {
   '/gallery': typeof GalleryRoute
   '/news': typeof NewsRoute
   '/portal': typeof PortalRoute
+  '/specialties': typeof SpecialtiesRoute
   '/tenders': typeof TendersRoute
   '/testimonials': typeof TestimonialsRoute
   '/app/$module': typeof AppModuleRoute
@@ -256,6 +263,7 @@ export interface FileRoutesByTo {
   '/gallery': typeof GalleryRoute
   '/news': typeof NewsRoute
   '/portal': typeof PortalRoute
+  '/specialties': typeof SpecialtiesRoute
   '/tenders': typeof TendersRoute
   '/testimonials': typeof TestimonialsRoute
   '/app/$module': typeof AppModuleRoute
@@ -292,6 +300,7 @@ export interface FileRoutesById {
   '/gallery': typeof GalleryRoute
   '/news': typeof NewsRoute
   '/portal': typeof PortalRoute
+  '/specialties': typeof SpecialtiesRoute
   '/tenders': typeof TendersRoute
   '/testimonials': typeof TestimonialsRoute
   '/app/$module': typeof AppModuleRoute
@@ -329,6 +338,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/news'
     | '/portal'
+    | '/specialties'
     | '/tenders'
     | '/testimonials'
     | '/app/$module'
@@ -364,6 +374,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/news'
     | '/portal'
+    | '/specialties'
     | '/tenders'
     | '/testimonials'
     | '/app/$module'
@@ -399,6 +410,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/news'
     | '/portal'
+    | '/specialties'
     | '/tenders'
     | '/testimonials'
     | '/app/$module'
@@ -435,6 +447,7 @@ export interface RootRouteChildren {
   GalleryRoute: typeof GalleryRoute
   NewsRoute: typeof NewsRoute
   PortalRoute: typeof PortalRoute
+  SpecialtiesRoute: typeof SpecialtiesRoute
   TendersRoute: typeof TendersRoute
   TestimonialsRoute: typeof TestimonialsRoute
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
@@ -527,6 +540,13 @@ declare module '@tanstack/react-router' {
       path: '/portal'
       fullPath: '/portal'
       preLoaderRoute: typeof PortalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/specialties': {
+      id: '/specialties'
+      path: '/specialties'
+      fullPath: '/specialties'
+      preLoaderRoute: typeof SpecialtiesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tenders': {
@@ -724,6 +744,7 @@ const rootRouteChildren: RootRouteChildren = {
   GalleryRoute: GalleryRoute,
   NewsRoute: NewsRoute,
   PortalRoute: PortalRoute,
+  SpecialtiesRoute: SpecialtiesRoute,
   TendersRoute: TendersRoute,
   TestimonialsRoute: TestimonialsRoute,
   AuthForgotPasswordRoute: AuthForgotPasswordRoute,

@@ -1,5 +1,5 @@
 import { ApiError, request } from "@/api/client/http";
-import { dataSourceFor } from "@/config/env";
+import { dataSourceFor, MOCK_ALLOWED } from "@/config/env";
 import type { ModuleConfig, Row } from "./types";
 import { resolveNames } from "./seedKit";
 
@@ -106,11 +106,18 @@ function createLaravelService(cfg: ModuleConfig): ResourceService {
   };
 }
 
+/** Production runtime with a real session never serves mock fixtures: modules without Laravel APIs report NOT_IMPLEMENTED. */
+function createNotImplementedService(cfg: ModuleConfig): ResourceService {
+  const fail = () => Promise.reject(new ApiError(`${cfg.title}: the hospital server does not provide this feature yet (NOT_IMPLEMENTED).`, 501, "unknown"));
+  return { source: "api", list: fail, get: fail, create: fail, update: fail, remove: fail, action: fail, pageAction: fail };
+}
+
 const cache = new Map<string, ResourceService>();
 /** Dev profiles have no Laravel token → mock. Otherwise Laravel when a documented binding exists and the module isn't forced to mock. */
 export function getService(cfg: ModuleConfig, isDevSession: boolean): ResourceService {
   const live = !isDevSession && !!cfg.laravel && dataSourceFor(cfg.key.replace(/-/g, "_"), "api") === "api";
-  const k = `${cfg.key}:${live}`;
-  if (!cache.has(k)) cache.set(k, live ? createLaravelService(cfg) : createMockService(cfg));
+  const blockedMock = !live && !isDevSession && !MOCK_ALLOWED;
+  const k = `${cfg.key}:${live}:${blockedMock}`;
+  if (!cache.has(k)) cache.set(k, live ? createLaravelService(cfg) : blockedMock ? createNotImplementedService(cfg) : createMockService(cfg));
   return cache.get(k)!;
 }

@@ -12,13 +12,13 @@ export const clinicalModules: ModuleConfig[] = [
     description: "Book, confirm, check in and track visits.", permission: "view_appointments", managePermission: "create_appointments",
     columns: [
       { key: "scheduled_at", label: "When", format: "datetime" }, { key: "patient_name|patient.full_name|name", label: "Patient" },
-      { key: "service_name|service.name", label: "Service", hideOnMobile: true }, { key: "clinician_name|clinician.name", label: "Dentist", hideOnMobile: true },
+      { key: "service_name|service.name", label: "Service", hideOnMobile: true }, { key: "clinician_name|clinician.name", label: "Clinician", hideOnMobile: true },
       { key: "status", label: "Status", format: "status" },
     ],
     fields: [
       { name: "patient_id", label: "Patient", type: "patient", required: true },
       { name: "scheduled_at", label: "Date & time", type: "datetime", required: true },
-      { name: "clinician_id", label: "Dentist", type: "dentist" },
+      { name: "clinician_id", label: "Clinician", type: "dentist" },
       { name: "service_name", label: "Service", type: "select", options: SERVICES },
       { name: "notes", label: "Notes", type: "textarea", wide: true },
     ],
@@ -45,19 +45,19 @@ export const clinicalModules: ModuleConfig[] = [
     workflowNote: QUEUE_BLOCK,
     columns: [
       { key: "queue_number", label: "#" }, { key: "patient_name|patient.full_name", label: "Patient" },
-      { key: "priority", label: "Priority", format: "status" }, { key: "dentist_name|dentist.name", label: "Dentist", hideOnMobile: true },
+      { key: "priority", label: "Priority", format: "status" }, { key: "dentist_name|dentist.name", label: "Clinician", hideOnMobile: true },
       { key: "joined_at", label: "Joined", format: "datetime", hideOnMobile: true }, { key: "status", label: "Status", format: "status" },
     ],
     fields: [
       { name: "patient_id", label: "Patient", type: "patient", required: true },
       { name: "priority", label: "Priority", type: "select", options: ["Normal", "Emergency"] },
-      { name: "dentist_id", label: "Dentist", type: "dentist" },
+      { name: "dentist_id", label: "Clinician", type: "dentist" },
       { name: "notes", label: "Notes", type: "textarea", wide: true },
     ],
     filters: [{ key: "status", label: "Status", options: ["waiting", "called", "in_consultation", "completed", "skipped"] }],
     actions: [
       { key: "call", label: "Call patient", to: "called", when: (r) => r["status"] === "waiting" },
-      { key: "assignDentist", label: "Assign dentist", fields: [{ name: "dentist_id", label: "Dentist", type: "dentist", required: true }], when: (r) => !["completed", "skipped"].includes(String(r["status"])) },
+      { key: "assignDentist", label: "Assign clinician", fields: [{ name: "dentist_id", label: "Clinician", type: "dentist", required: true }], when: (r) => !["completed", "skipped"].includes(String(r["status"])) },
       { key: "start", label: "Start consultation", to: "in_consultation", mockOnly: QUEUE_BLOCK, when: (r) => r["status"] === "called" },
       { key: "complete", label: "Complete", to: "completed", when: (r) => r["status"] === "in_consultation" },
       { key: "skip", label: "Skip", to: "skipped", fields: [{ name: "reason", label: "Reason", type: "text" }], when: (r) => ["waiting", "called"].includes(String(r["status"])) },
@@ -84,7 +84,7 @@ export const clinicalModules: ModuleConfig[] = [
     description: "SOAP notes and consultation history.", permission: "view_consultations", managePermission: "view_consultations",
     columns: [
       { key: "consulted_at", label: "Date", format: "datetime" }, { key: "patient_name|patient.full_name", label: "Patient" },
-      { key: "reason", label: "Reason", hideOnMobile: true }, { key: "clinician_name|clinician.name", label: "Dentist", hideOnMobile: true }, { key: "status", label: "Status", format: "status" },
+      { key: "reason", label: "Reason", hideOnMobile: true }, { key: "clinician_name|clinician.name", label: "Clinician", hideOnMobile: true }, { key: "status", label: "Status", format: "status" },
     ],
     fields: [
       { name: "patient_id", label: "Patient", type: "patient", required: true },
@@ -121,7 +121,7 @@ export const clinicalModules: ModuleConfig[] = [
     seed: (i) => ({ ...patientAt(i), created_at: at(-(i % 60), 8 + (i % 8)), bp: `${110 + (i % 30)}/${70 + (i % 15)}`, pulse: 62 + (i % 30), temperature: (36.2 + (i % 8) / 10).toFixed(1), weight: 55 + (i % 35), height: 150 + (i % 35), oxygen_saturation: 95 + (i % 5), notes: null }),
   },
   {
-    key: "dental-chart", title: "Dental Chart", singular: "Chart entry", section: "Clinical", icon: Smile,
+    key: "dental-chart", title: "Dental Chart", singular: "Chart entry", section: "Dental", icon: Smile,
     description: "Tooth conditions and procedures. Open a patient to use the full odontogram.", permission: "view_dental_chart", managePermission: "edit_dental_chart",
     columns: [
       { key: "patient_name|patient.full_name", label: "Patient" }, { key: "tooth_number", label: "Tooth" },

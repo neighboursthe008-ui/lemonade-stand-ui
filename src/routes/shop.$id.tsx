@@ -12,7 +12,7 @@ import { getShopService } from "@/services/shop/shop.service";
 import { cart } from "@/stores/cart";
 
 export const Route = createFileRoute("/shop/$id")({
-  head: () => seo("Product — Munab shop", "Dental care product details, price and availability."),
+  head: () => seo("Pharmacy product — Munab Nursing Home", "Pharmacy product details, price and availability."),
   component: Product,
 });
 
@@ -23,7 +23,7 @@ function Product() {
   return (
     <PublicShell>
       <Container className="py-10">
-        <Link to="/shop" className="text-sm text-muted-foreground hover:underline">← Back to shop</Link>
+        <Link to="/shop" className="text-sm text-muted-foreground hover:underline">← Back to pharmacy products</Link>
         {q.isLoading ? <LoadingState /> : !q.data ? <EmptyState title="Product not found" /> : (
           <div className="mt-6 max-w-xl space-y-4 rounded-lg border bg-card p-6">
             <h1 className="font-display text-3xl font-bold">{q.data.name}</h1>

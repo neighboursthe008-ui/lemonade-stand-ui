@@ -9,13 +9,13 @@ import { AssistantWidget } from "@/components/public/AssistantWidget";
 const links = [
   { to: "/about", label: "About" },
   { to: "/departments", label: "Departments" },
-  { to: "/services", label: "Services" },
-  { to: "/doctors", label: "Doctors" },
+  { to: "/services", label: "Hospital Services" },
+  { to: "/doctors", label: "Doctors & Specialists" },
   { to: "/blog", label: "Blog" },
   { to: "/news", label: "News" },
   
   { to: "/tenders", label: "Tenders" },
-  { to: "/shop", label: "Shop" },
+  { to: "/specialties", label: "Specialties" },
   { to: "/portal", label: "My portal" },
   { to: "/contact", label: "Contact" },
 ] as const;

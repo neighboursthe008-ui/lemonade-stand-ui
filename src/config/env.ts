@@ -13,6 +13,9 @@ export function dataSourceFor(module: string, fallback: DataSource = globalMode)
   return v === "api" || v === "mock" ? v : fallback;
 }
 
+/** Mock fixtures are allowed in development/test only (or an explicit QA build). Never in the production runtime. */
+export const MOCK_ALLOWED = import.meta.env.DEV || env["VITE_ALLOW_MOCK_FIXTURES"] === "true";
+
 /** Mock indicators are visible in dev, or in production only when explicitly enabled. */
 export const SHOW_MOCK_INDICATORS = import.meta.env.DEV || env["VITE_SHOW_MOCK_INDICATORS"] === "true";
 

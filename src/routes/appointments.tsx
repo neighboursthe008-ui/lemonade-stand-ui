@@ -19,7 +19,7 @@ const search = z.object({ service: z.coerce.number().int().positive().optional()
 
 export const Route = createFileRoute("/appointments")({
   validateSearch: (s) => search.parse(s),
-  head: () => seo("Book an appointment", "Choose a service, dentist and time to book your visit. No payment is needed to book."),
+  head: () => seo("Book an appointment", "Choose a department, service, clinician and time to book your visit. No payment is needed to book."),
   component: Booking,
 });
 
@@ -66,7 +66,7 @@ function Booking() {
                 <div className="space-y-1.5">
                   <Label htmlFor="doc">Dentist *</Label>
                   <select id="doc" className={sel} value={doctor} onChange={(e) => { setDoctor(e.target.value ? Number(e.target.value) : ""); setTime(""); }} disabled={doctors.isLoading}>
-                    <option value="">{doctors.isLoading ? "Loading…" : "Choose a dentist"}</option>
+                    <option value="">{doctors.isLoading ? "Loading…" : "Choose a clinician"}</option>
                     {doctors.data?.map((x) => <option key={x.id} value={x.id}>{x.name}{x.specialty ? ` — ${x.specialty}` : ""}</option>)}
                   </select>
                 </div>
@@ -78,7 +78,7 @@ function Booking() {
               <fieldset>
                 <legend className="text-sm font-medium">Available times</legend>
                 <div className="mt-2">
-                  {!doctor || !date ? <p className="text-sm text-muted-foreground">Choose a dentist and date to see times.</p>
+                  {!doctor || !date ? <p className="text-sm text-muted-foreground">Choose a clinician and date to see times.</p>
                     : times.isLoading ? <LoadingState label="Checking availability…" />
                     : times.isError ? <ErrorState error={times.error} onRetry={() => times.refetch()} />
                     : !times.data?.length ? <EmptyState title="No free times on this day">Try another date.</EmptyState>

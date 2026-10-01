@@ -14,7 +14,7 @@ import { getShopService } from "@/services/shop/shop.service";
 import { cart, useCart } from "@/stores/cart";
 
 export const Route = createFileRoute("/shop/")({
-  head: () => seo("Dental care shop", "Toothbrushes, floss, mouthwash and dental care products from Munab Nursing Home."),
+  head: () => seo("Pharmacy health products", "Health and oral-care products from the Munab Nursing Home pharmacy."),
   component: Shop,
 });
 
@@ -27,9 +27,9 @@ function Shop() {
   const { count } = useCart();
   return (
     <PublicShell>
-      <PageHeader eyebrow="Shop" title="Dental care, delivered." />
+      <PageHeader eyebrow="Pharmacy" title="Pharmacy health products" />
       <Container className="space-y-6">
-        <MockDataBanner reason="Shop catalogue and checkout have no clinic-system API yet" />
+        <MockDataBanner reason="Pharmacy product catalogue and ordering have no clinic-system API yet" />
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative flex-1"><Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" /><Input aria-label="Search products" className="pl-9" placeholder="Search products" value={q} onChange={(e) => setQ(e.target.value)} /></div>
           <Button asChild variant="outline"><Link to="/cart"><ShoppingCart className="mr-1 h-4 w-4" />Cart ({count})</Link></Button>
