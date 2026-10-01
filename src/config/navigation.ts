@@ -5,7 +5,7 @@ import { modules } from "@/modules/registry";
 export interface NavItem { label: string; to: string; icon: LucideIcon; permission?: string | string[]; superAdminOnly?: boolean; ready?: boolean; badge?: number }
 export interface NavGroup { label: string; items: NavItem[] }
 
-const SECTIONS = ["Main", "Patient Care", "Clinical", "Nursing & Wards", "Departments", "Diagnostics", "Pharmacy", "Finance", "Insurance", "Accounting", "Inventory & Shop", "Procurement", "Human Resources", "Communication", "Content & Marketing", "Administration", "System"];
+const SECTIONS = ["Main", "Patient Care", "Clinical", "Dental", "Nursing & Wards", "Departments", "Diagnostics", "Pharmacy", "Finance", "Insurance", "Accounting", "Inventory", "Procurement", "Human Resources", "Communication", "Content & Marketing", "Administration", "System"];
 
 /** Built from the module registry so every menu item has a working page. Payroll lives in Human Resources (calculations are server-side only). */
 const extra: Record<string, NavItem[]> = {

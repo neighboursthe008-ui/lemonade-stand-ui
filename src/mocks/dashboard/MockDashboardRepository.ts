@@ -30,7 +30,7 @@ const byRole: Record<string, Pick<DashboardData, "kpis">> = {
     { key: "low", label: "Low stock items", value: "7", hint: "" },
     { key: "expiry", label: "Expiring in 30 days", value: "3", hint: "batches" },
     { key: "po", label: "Open purchase orders", value: "2", hint: "" },
-    { key: "orders", label: "Shop orders to pack", value: "5", hint: "" },
+    { key: "orders", label: "Pharmacy orders to pack", value: "5", hint: "" },
   ] },
 };
 
